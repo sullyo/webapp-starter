@@ -11,11 +11,11 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "^22.13.4",
-    "typescript": "^5",
-    "vitest": "^3.0.6"
+    "@types/node": "^22.14.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
   },
   "dependencies": {
-    "base-x": "^5.0.0"
+    "base-x": "^5.0.1"
   }
 }

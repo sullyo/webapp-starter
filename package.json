@@ -6,7 +6,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "biome format --write .",
-    "check-types": "turbo run check-types",
+    "typecheck": "turbo run typecheck",
     "db:push": "turbo run db:push",
     "db:generate": "turbo run db:generate",
     "db:migrate": "turbo run db:migrate",
@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "turbo": "^2.4.2",
+    "turbo": "^2.5.0",
     "typescript": "^5"
   },
   "packageManager": "pnpm@9.0.0",
