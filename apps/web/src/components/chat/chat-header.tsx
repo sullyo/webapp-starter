@@ -3,24 +3,21 @@
 import { memo } from "react";
 import { useRouter } from "next/navigation";
 
-import { useWindowSize } from "usehooks-ts";
+import { useIsMounted, useWindowSize } from "usehooks-ts";
 
 import { Button } from "@/components/ui/button";
-import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Plus } from "lucide-react";
 
 function PureChatHeader({ chatId }: { chatId: string }) {
   const router = useRouter();
-  const { open } = useSidebar();
 
   const { width: windowWidth } = useWindowSize();
+  const isMounted = useIsMounted();
 
   return (
     <header className="sticky top-0 flex items-center gap-2 bg-background px-2 py-1.5 md:px-2">
-      <SidebarTrigger />
-
-      {(!open || windowWidth < 768) && (
+      {windowWidth > 768 && isMounted() && (
         <Tooltip>
           <TooltipTrigger asChild>
             <Button

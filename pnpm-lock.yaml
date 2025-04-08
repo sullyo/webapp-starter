@@ -20,6 +20,9 @@ importers:
 
   apps/api:
     dependencies:
+      '@ai-sdk/google':
+        specifier: ^1.2.10
+        version: 1.2.10(zod@3.24.2)
       '@clerk/backend':
         specifier: ^1.26.0
         version: 1.26.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(svix@1.63.1)
@@ -38,6 +41,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
+      ai:
+        specifier: ^4.3.4
+        version: 4.3.4(react@19.1.0)(zod@3.24.2)
       hono:
         specifier: ^4.7.5
         version: 4.7.5
@@ -362,6 +368,12 @@ importers:
   packages/typescript-config: {}
 
 packages:
+
+  '@ai-sdk/google@1.2.10':
+    resolution: {integrity: sha512-YmZ9DIO6Un0+RU9PtjM9TfoExmUQg2fk8vTlwT+NOaARyhv8eskRCUTne0zf5uUOazPIJuBEv2I6YE9XnS+tUg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
 
   '@ai-sdk/provider-utils@2.2.6':
     resolution: {integrity: sha512-sUlZ7Gnq84DCGWMQRIK8XVbkzIBnvPR1diV4v6JwPgpn5armnLI/j+rqn62MpLrU5ZCQZlDKl/Lw6ed3ulYqaA==}
@@ -4937,6 +4949,12 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
+
+  '@ai-sdk/google@1.2.10(zod@3.24.2)':
+    dependencies:
+      '@ai-sdk/provider': 1.1.2
+      '@ai-sdk/provider-utils': 2.2.6(zod@3.24.2)
+      zod: 3.24.2
 
   '@ai-sdk/provider-utils@2.2.6(zod@3.24.2)':
     dependencies:
