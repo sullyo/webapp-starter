@@ -13,7 +13,7 @@ export default function TestPostsPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto p-4 space-y-4">
+      <div className="container mx-auto space-y-4 p-4">
         {[1, 2, 3].map((i) => (
           <Card key={i}>
             <CardHeader>
@@ -41,12 +41,12 @@ export default function TestPostsPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 space-y-4">
+    <div className="container mx-auto space-y-4 p-4">
       {data?.map((post) => (
         <Card key={post.id}>
           <CardHeader>
             <CardTitle>{post.title}</CardTitle>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Created: {new Date(post.createdAt).toLocaleDateString()}
             </p>
           </CardHeader>

@@ -6,7 +6,7 @@ import { postRoutes } from "@/modules/posts";
 import { logger } from "hono/logger";
 import { errorHandler } from "@/pkg/middleware/error";
 import { webhookRoutes } from "@/modules/webhooks/webhook.routes";
-
+import { chatRoutes } from "@/modules/chat/chat.router";
 const app = new Hono();
 
 app.use("*", logger());
@@ -31,7 +31,8 @@ const routes = app
   .basePath("/api")
   .use("*", errorHandler())
   .route("/webhooks", webhookRoutes)
-  .route("/posts", postRoutes);
+  .route("/posts", postRoutes)
+  .route("/chat", chatRoutes);
 
 export type AppType = typeof routes;
 
