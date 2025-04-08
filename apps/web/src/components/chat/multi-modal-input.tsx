@@ -203,14 +203,7 @@ function PureMultimodalInput({
           }
         }}
       />
-      {/* <div className="absolute bottom-0 flex w-fit flex-row justify-start p-2">
-        <AgentPicker
-          options={agentsOptions}
-          selectedAgentId={selectedAgentId}
-          onAgentChange={setSelectedAgentId}
-          className="w-fit"
-        />
-      </div> */}
+
       {/* 
       <div className="absolute bottom-0 flex w-fit flex-row justify-start p-2">
         <AttachmentsButton fileInputRef={fileInputRef} isLoading={isLoading} />
