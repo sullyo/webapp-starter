@@ -1,4 +1,5 @@
-import { hc } from "hono/client";
+import { ClientResponse, hc } from "hono/client";
+
 import { HTTPException } from "hono/http-exception";
 import type { AppType } from "../../../api/src";
 import { getToken } from "@/lib/clerk";
@@ -29,12 +30,6 @@ export const getApiClient = () => {
         cache: "no-store",
       });
 
-      if (!response.ok) {
-        throw new HTTPException(response.status as any, {
-          message: "Network response was not ok",
-        });
-      }
-
       return response;
     },
   }).api;
@@ -50,13 +45,23 @@ export const getServerClient = () => {
         cache: "no-store",
       });
 
-      if (!response.ok) {
-        throw new HTTPException(response.status as any, {
-          message: "Network response was not ok",
-        });
-      }
-
       return response;
     },
   }).api;
+};
+
+export const callRpc = async <T>(rpc: Promise<ClientResponse<T>>): Promise<T> => {
+  try {
+    const data = await rpc;
+
+    if (!data.ok) {
+      const res = await data.text();
+      throw new Error(res);
+    }
+
+    const res = await data.json();
+    return res as T;
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
 };
