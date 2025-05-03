@@ -1,31 +1,22 @@
 import { logger } from "@repo/logs";
-import type { MiddlewareHandler } from "hono";
+import type { Context, MiddlewareHandler } from "hono";
+import { HTTPException } from "hono/http-exception";
+import { z } from "zod";
 
-// Changed to a factory function for consistency
-export const errorHandler = (): MiddlewareHandler => {
-  return async (c, next) => {
-    try {
-      await next();
-    } catch (error) {
-      logger.error(error);
-
-      if (error instanceof Error) {
-        return c.json(
-          {
-            success: false,
-            message: error.message,
-          },
-          error.name === "ValidationError" ? 400 : 500,
-        );
-      }
-
-      return c.json(
-        {
-          success: false,
-          message: "Internal Server Error",
-        },
-        500,
-      );
-    }
-  };
+export const errorHandler = (err: Error | HTTPException, c: Context) => {
+  if (err instanceof HTTPException) {
+    logger.error({
+      status: err.status,
+      message: err.message,
+    });
+    return c.text(err.message, err.status);
+  }
+  if (err instanceof z.ZodError) {
+    return c.text(err.errors.map((err) => err.message).join(",\n"), 400);
+  }
+  logger.error({
+    message: "Unknown Error",
+    error: err,
+  });
+  return c.text("Something went wrong", 500);
 };

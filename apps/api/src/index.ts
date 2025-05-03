@@ -7,6 +7,8 @@ import { logger } from "hono/logger";
 import { errorHandler } from "@/pkg/middleware/error";
 import { webhookRoutes } from "@/modules/webhooks/webhook.routes";
 import { chatRoutes } from "@/modules/chat/chat.router";
+import { prettyJSON } from "hono/pretty-json";
+
 const app = new Hono();
 
 app.use("*", logger());
@@ -23,13 +25,16 @@ app.use(
   }),
 );
 
+app.use("*", prettyJSON());
+
 app.get("/health", (c) => {
   return c.text("OK");
 });
 
+app.onError(errorHandler);
+
 const routes = app
   .basePath("/api")
-  .use("*", errorHandler())
   .route("/webhooks", webhookRoutes)
   .route("/posts", postRoutes)
   .route("/chat", chatRoutes);

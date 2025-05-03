@@ -12,6 +12,12 @@ const postRoutes = new Hono()
     // This route means we can fetch user auth token if available, but its not required. Unauthorized users can still access this route.
     const auth = getAuth(c);
 
+    /** Throw errors like this
+     if (somethingWentWrong) {
+       throw new HTTPException(401, { message: "Custom error message" });
+     }
+     */
+
     return c.json(posts);
   })
   .use(requireAuth)
