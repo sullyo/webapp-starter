@@ -8,21 +8,21 @@
     "clerk:listen": "pnpm dlx ngrok http --url=still-regular-sculpin.ngrok-free.app 3004"
   },
   "dependencies": {
-    "@ai-sdk/google": "^1.2.10",
-    "@clerk/backend": "^1.26.0",
+    "@ai-sdk/google": "^1.2.14",
+    "@clerk/backend": "^1.31.2",
     "@hono/zod-validator": "^0.4.3",
     "@repo/db": "workspace:*",
     "@repo/id": "workspace:*",
     "@repo/logs": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "ai": "^4.3.4",
-    "hono": "^4.7.5",
-    "svix": "^1.63.1",
-    "vitest": "^3.1.1",
-    "zod": "^3.24.2"
+    "ai": "^4.3.13",
+    "hono": "^4.7.8",
+    "svix": "^1.64.1",
+    "vitest": "^3.1.2",
+    "zod": "^3.24.3"
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "vercel": "^41.4.1"
+    "vercel": "^41.7.0"
   }
 }

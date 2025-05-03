@@ -16,9 +16,9 @@
   "devDependencies": {
     "@repo/id": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "^22.14.0",
-    "@types/pg": "^8.11.11",
-    "dotenv": "^16.4.7",
+    "@types/node": "^22.15.3",
+    "@types/pg": "^8.11.14",
+    "dotenv": "^16.5.0",
     "dotenv-cli": "^8.0.0",
     "drizzle-kit": "0.30.4",
     "postgres": "^3.4.5",
@@ -27,6 +27,6 @@
   "dependencies": {
     "drizzle-orm": "^0.39.3",
     "drizzle-zod": "^0.7.1",
-    "zod": "^3.24.2"
+    "zod": "^3.24.3"
   }
 }
