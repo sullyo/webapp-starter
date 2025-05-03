@@ -8,6 +8,7 @@
     "clerk:listen": "pnpm dlx ngrok http --url=still-regular-sculpin.ngrok-free.app 3004"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^1.2.10",
     "@ai-sdk/google": "^1.2.14",
     "@clerk/backend": "^1.31.2",
     "@hono/zod-validator": "^0.4.3",

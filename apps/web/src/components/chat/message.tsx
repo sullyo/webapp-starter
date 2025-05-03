@@ -71,7 +71,13 @@ const PurePreviewMessage = ({
               );
             }
             if (part.type === "reasoning") {
-              return <MessageReasoning isLoading={isLoading} reasoning={part.reasoning} />;
+              return (
+                <MessageReasoning
+                  isLoading={isLoading}
+                  reasoning={part.reasoning}
+                  key={messageKey}
+                />
+              );
             }
             if (part.type === "tool-invocation") {
               return (
@@ -115,10 +121,6 @@ export const ThinkingMessage = () => {
           },
         )}
       >
-        <div className="flex size-7 shrink-0 items-center justify-center rounded-full ring-1 ring-border">
-          <Sparkle className="size-4" />
-        </div>
-
         <div className="flex w-full flex-col gap-2">
           <div className="flex flex-col gap-4 text-[15px] text-muted-foreground">Thinking...</div>
         </div>
