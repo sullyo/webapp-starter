@@ -44,11 +44,21 @@ function CodeBlockCode({
 
   useEffect(() => {
     async function highlight() {
-      const html = await codeToHtml(code, {
-        lang: language,
-        theme: appTheme === "dark" ? "github-dark" : "github-light",
-      });
-      setHighlightedHtml(html);
+      if (!code || typeof code !== "string") {
+        setHighlightedHtml(`<pre><code>${code || ""}</code></pre>`);
+        return;
+      }
+
+      try {
+        const html = await codeToHtml(code, {
+          lang: language,
+          theme: appTheme === "dark" ? "github-dark" : "github-light",
+        });
+        setHighlightedHtml(html);
+      } catch (error) {
+        console.error("Error highlighting code:", error);
+        setHighlightedHtml(`<pre><code>${code}</code></pre>`);
+      }
     }
     highlight();
   }, [code, language, theme, appTheme]);
