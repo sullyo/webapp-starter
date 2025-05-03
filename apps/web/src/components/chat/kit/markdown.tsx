@@ -45,17 +45,19 @@ const INITIAL_COMPONENTS: Partial<Components> = {
     const language = extractLanguage(className);
 
     return (
-      <CodeBlock className={className}>
-        <CodeBlockGroup className="flex h-9 items-center justify-between px-4">
-          <div className="py-1 pr-2 font-mono text-muted-foreground text-xs">{language}</div>
-        </CodeBlockGroup>
-        <div className="sticky top-16 lg:top-0">
-          <div className="absolute right-0 bottom-0 flex h-9 items-center pr-1.5">
-            <CopyButton value={children as string} />
+      <div className="py-4">
+        <CodeBlock className={className}>
+          <CodeBlockGroup className="flex h-9 items-center justify-between px-4">
+            <div className="py-1 pr-2 font-mono text-muted-foreground text-xs">{language}</div>
+          </CodeBlockGroup>
+          <div className="sticky top-14 lg:top-0">
+            <div className="absolute right-0 bottom-0 flex h-9 items-center pr-1.5">
+              <CopyButton value={children as string} />
+            </div>
           </div>
-        </div>
-        <CodeBlockCode code={children as string} language={language} />
-      </CodeBlock>
+          <CodeBlockCode code={children as string} language={language} />
+        </CodeBlock>
+      </div>
     );
   },
   pre: function PreComponent({ children }) {
