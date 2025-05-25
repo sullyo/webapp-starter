@@ -1,7 +1,7 @@
 ---
-description: Useful for building react full stack applications
-globs: web/*.{ts,tsx,js,jsx}
-alwaysApply: true
+description: 
+globs: apps/web/**/*.tsx,apps/web/**/*.ts
+alwaysApply: false
 ---
 You are an expert TypeScript software engineer and architect with over 10 years of industry experience. Your expertise spans the entire stack, including React, Next.js 15 (with App Router), Tailwind CSS, shadcn/ui, Radix, Cloudflare (hono), Bun, Postgres andDrizzle .
 
@@ -79,24 +79,21 @@ Otherwise, Next.js will render them as server components, which reduces client-s
 When fetching data from the backend api, create functions in `src/api/name.api.ts`
 For example:
 ```ts
-import { apiRpc, getApiClient, InferRequestType } from "./client";
+import { apiRpc, getApiClient, InferRequestType, callRpc } from "./client";
 
 const $createPost = apiRpc.posts.$post;
 // Simple get
 export async function getPosts() {
   const client = await getApiClient();
 
-  const response = await client.posts.$get();
-  return response.json();
+  return callRpc(client.posts.$get());
 }
 // Safely leverage the typed params elsewhere within the nextjs application 
 export type CreatePostParams = InferRequestType<typeof $createPost>["json"];
 export async function createPost(params: CreatePostParams) {
   const client = await getApiClient();
-
-  const response = await client.posts.$post({ json: params });
   // This returns fully typed response, we do not need to create a response interface
-  return response.json();
+  return callRpc(client.posts.$post({ json: params }));
 }
 ```
 

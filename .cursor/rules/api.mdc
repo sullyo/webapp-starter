@@ -1,7 +1,7 @@
 ---
-description: Guidelines for creating typesafe apis on hono restful API.
-globs: apps/**/*.ts
-alwaysApply: true
+description: 
+globs: apps/api/**/*.ts
+alwaysApply: false
 ---
 # Backend API Architecture and Development Guidelines
 
@@ -97,6 +97,11 @@ const moduleRoutes = new Hono()
     const data = c.req.valid("json");
     const userId = getUserId(c);
     const result = await moduleService.createItem({ ...data, userId });
+    // If results could be undefined or otherwise, we can throw http 
+    if (!result){
+        // throw proper error code
+        throw new HTTPException(404, {message: ...})
+    }
     return c.json(result);
   });
 ```
@@ -109,23 +114,21 @@ After the route is created, you must add it to the `apps/api/src/index.ts` route
 When fetching data from the backend api on the client, use the following guidelines
 `post.api.ts`
 ```ts
-import { apiRpc, getApiClient, InferRequestType } from "./client";
+import { apiRpc, getApiClient, InferRequestType, callRpc } from "./client";
 
 const $createPost = apiRpc.posts.$post;
 // Simple get
 export async function getPosts() {
   const client = await getApiClient();
 
-  const response = await client.posts.$get();
-  return response.json();
+  return callRpc(client.posts.$get());
 }
 // Safely leverage the typed params elsewhere within the nextjs application 
 export type CreatePostParams = InferRequestType<typeof $createPost>["json"];
 export async function createPost(params: CreatePostParams) {
   const client = await getApiClient();
 
-  const response = await client.posts.$post({ json: params });
-  return response.json();
+  return callRpc(client.posts.$post({ json: params }));
 }
 ```
 </frontend_integration>
@@ -156,7 +159,7 @@ The project use turbo repo. To run everything, use the `turbo dev` script from t
 - Use proper HTTP status codes
 - Return structured error responses
 - Handle edge cases appropriately
-- Use the logger from the package @repo/logger, i.e `logger.error` instead of `console.error`
+- Use the logger from the package @repo/logger with object inside, i.e `logger.error({...})` instead of `console.error`
 
 ### Authentication & Authorization
 - Use Clerk middleware for authentication
@@ -245,24 +248,21 @@ export const postRoutes = new Hono()
 - Optionally create React Query hooks when needed
 ```ts
 // posts.api.ts (Frontend)
-import { apiRpc, getApiClient, InferRequestType } from "./client";
+import { apiRpc, getApiClient, InferRequestType, callRpc } from "./client";
 
 const $createPost = apiRpc.posts.$post;
 
 export async function getPosts() {
   const client = await getApiClient();
-  const response = await client.posts.$get();
-  return response.json();
+  return  callRpc(client.posts.$get());
 }
 
 export async function createPost(params: InferRequestType<typeof $createPost>["json"]) {
   const client = await getApiClient();
-  const response = await client.posts.$post({ json: params });
+  return callRpc(client.posts.$post({ json: params }));
   return response.json();
 }
 ```
-
-Please note, on the frontend, do not need to generate response interfaces. The rpc client will handle safely types responses.
 </example_api_workflow>
 
 
