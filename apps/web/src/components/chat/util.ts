@@ -1,12 +1,12 @@
-import { type Message } from "ai";
+import type { Message } from "ai";
 
-export function sanitizeUIMessages(messages: Array<Message>): Array<Message> {
+export function sanitizeUIMessages(messages: Message[]): Message[] {
   const messagesBySanitizedToolInvocations = messages.map((message) => {
     if (message.role !== "assistant") return message;
 
     if (!message.parts) return message;
 
-    const toolResultIds: Array<string> = [];
+    const toolResultIds: string[] = [];
 
     for (const part of message.parts) {
       if (part.type === "tool-invocation" && part.toolInvocation.state === "result") {

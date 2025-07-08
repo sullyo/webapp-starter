@@ -28,7 +28,7 @@ const useAutoScroll = (containerRef: React.RefObject<HTMLDivElement | null>, ena
 
       container.scrollTo({
         top: targetScrollTop,
-        behavior: behavior,
+        behavior,
       });
 
       const checkScrollEnd = () => {

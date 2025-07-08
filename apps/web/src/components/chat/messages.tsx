@@ -1,15 +1,14 @@
-import { memo, useState, useRef } from "react";
-import { type ChatRequestOptions, type Message } from "ai";
+import type { UseChatHelpers } from "@ai-sdk/react";
+import type { ChatRequestOptions, Message } from "ai";
 import equal from "fast-deep-equal";
-
-import { PreviewMessage, ThinkingMessage } from "./message";
+import { memo, useRef, useState } from "react";
 import { ChatContainer } from "./kit/chat-container";
-import { UseChatHelpers } from "@ai-sdk/react";
+import { PreviewMessage, ThinkingMessage } from "./message";
 
 interface MessagesProps {
   chatId: string;
   status: UseChatHelpers["status"];
-  messages: Array<Message>;
+  messages: Message[];
   setMessages: (messages: Message[] | ((messages: Message[]) => Message[])) => void;
   reload: (chatRequestOptions?: ChatRequestOptions) => Promise<string | null | undefined>;
   isReadonly: boolean;
@@ -28,22 +27,22 @@ function PureMessages({
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <ChatContainer className="flex-1 space-y-4 p-4" autoScroll={autoScroll} ref={chatContainerRef}>
+    <ChatContainer autoScroll={autoScroll} className="flex-1 space-y-4 p-4" ref={chatContainerRef}>
       {messages.map((message, index) => (
         <PreviewMessage
-          key={message.id}
           chatId={chatId}
-          message={message}
           isLoading={status === "streaming" && messages.length - 1 === index}
-          setMessages={setMessages}
-          reload={reload}
           isReadonly={isReadonly}
+          key={message.id}
+          message={message}
+          reload={reload}
+          setMessages={setMessages}
         />
       ))}
 
       {status === "submitted" &&
         messages.length > 0 &&
-        messages[messages.length - 1]?.role === "user" && <ThinkingMessage />}
+        messages.at(-1)?.role === "user" && <ThinkingMessage />}
     </ChatContainer>
   );
 }

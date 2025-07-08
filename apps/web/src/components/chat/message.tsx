@@ -1,17 +1,13 @@
 "use client";
 
-import { memo, useMemo, useState } from "react";
-
 import type { ChatRequestOptions, Message } from "ai";
 import { cx } from "class-variance-authority";
 import equal from "fast-deep-equal";
-
-import { cn } from "@/lib/utils";
-
-import { Pencil, Sparkle } from "lucide-react";
-import { Message as PromptMessage, MessageContent } from "@/components/chat/kit/message";
-import { RenderToolInvocation } from "@/components/chat/tool-message";
+import { memo, useState } from "react";
+import { MessageContent, Message as PromptMessage } from "@/components/chat/kit/message";
 import { MessageReasoning } from "@/components/chat/message-reasoning";
+import { RenderToolInvocation } from "@/components/chat/tool-message";
+import { cn } from "@/lib/utils";
 
 const PurePreviewMessage = ({
   chatId,
@@ -62,7 +58,7 @@ const PurePreviewMessage = ({
                   )}
                   {message.role === "assistant" && (
                     <PromptMessage className="justify-start" key={`${messageKey}-assistant`}>
-                      <MessageContent markdown className="bg-transparent p-0 text-[15px] ">
+                      <MessageContent className="bg-transparent p-0 text-[15px] " markdown>
                         {part.text}
                       </MessageContent>
                     </PromptMessage>
@@ -74,17 +70,17 @@ const PurePreviewMessage = ({
               return (
                 <MessageReasoning
                   isLoading={isLoading}
-                  reasoning={part.reasoning}
                   key={messageKey}
+                  reasoning={part.reasoning}
                 />
               );
             }
             if (part.type === "tool-invocation") {
               return (
                 <RenderToolInvocation
-                  toolInvocation={part.toolInvocation}
                   isLoading={isLoading}
                   key={messageKey}
+                  toolInvocation={part.toolInvocation}
                 />
               );
             }

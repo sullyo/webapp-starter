@@ -1,4 +1,4 @@
-import { apiRpc, InferRequestType, callRpc, getApiClient } from "./client";
+import { apiRpc, type InferRequestType, callRpc, getApiClient } from "./client";
 
 const $createPost = apiRpc.posts.$post;
 

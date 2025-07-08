@@ -12,11 +12,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
 import { sanitizeUIMessages } from "@/components/chat/util";
-import { ArrowUp, Paperclip, Square, StopCircleIcon } from "lucide-react";
+import { ArrowUp, Paperclip, Square, } from "lucide-react";
 import { useOnMountUnsafe } from "@/hooks/use-on-mount-unsafe";
 
-import { useQuery } from "@tanstack/react-query";
-import { UseChatHelpers } from "@ai-sdk/react";
+import type { UseChatHelpers } from "@ai-sdk/react";
 
 function PureMultimodalInput({
   chatId,
@@ -38,10 +37,10 @@ function PureMultimodalInput({
   setInput: (value: string) => void;
   status: UseChatHelpers["status"];
   stop: () => void;
-  attachments: Array<Attachment>;
-  setAttachments: Dispatch<SetStateAction<Array<Attachment>>>;
-  messages: Array<Message>;
-  setMessages: Dispatch<SetStateAction<Array<Message>>>;
+  attachments: Attachment[];
+  setAttachments: Dispatch<SetStateAction<Attachment[]>>;
+  messages: Message[];
+  setMessages: Dispatch<SetStateAction<Message[]>>;
   append: (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions
@@ -258,7 +257,7 @@ function PureStopButton({
   setMessages,
 }: {
   stop: () => void;
-  setMessages: Dispatch<SetStateAction<Array<Message>>>;
+  setMessages: Dispatch<SetStateAction<Message[]>>;
 }) {
   return (
     <Button
@@ -284,7 +283,7 @@ function PureSendButton({
 }: {
   submitForm: () => void;
   input: string;
-  uploadQueue: Array<string>;
+  uploadQueue: string[];
 }) {
   return (
     <Button

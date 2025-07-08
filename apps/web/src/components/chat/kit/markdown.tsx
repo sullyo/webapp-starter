@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { marked } from "marked";
 import { memo, useId, useMemo } from "react";
-import ReactMarkdown, { Components } from "react-markdown";
+import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "./code-block";
@@ -26,7 +26,7 @@ function extractLanguage(className?: string): string {
 }
 
 const INITIAL_COMPONENTS: Partial<Components> = {
-  code: function CodeComponent({ className, children, ...props }) {
+  code({ className, children, ...props }) {
     const isInline =
       !props.node?.position?.start.line ||
       props.node?.position?.start.line === props.node?.position?.end.line;
@@ -60,7 +60,7 @@ const INITIAL_COMPONENTS: Partial<Components> = {
       </div>
     );
   },
-  pre: function PreComponent({ children }) {
+  pre({ children }) {
     return <>{children}</>;
   },
 };

@@ -157,7 +157,7 @@ function FileUploadContent({ className, ...props }: FileUploadContentProps) {
     return () => setMounted(false);
   }, []);
 
-  if (!context?.isDragging || !mounted || context?.disabled) {
+  if (!(context?.isDragging && mounted ) || context?.disabled) {
     return null;
   }
 

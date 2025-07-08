@@ -1,6 +1,5 @@
-import { ClientResponse, hc } from "hono/client";
+import { type ClientResponse, hc } from "hono/client";
 
-import { HTTPException } from "hono/http-exception";
 import type { AppType } from "../../../api/src";
 import { getToken } from "@/lib/clerk";
 

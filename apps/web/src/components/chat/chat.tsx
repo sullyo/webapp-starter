@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, } from "react";
 import type { Attachment, Message } from "ai";
 import { useChat } from "@ai-sdk/react";
 
@@ -21,7 +21,7 @@ export function Chat({
   isHomePage = false,
 }: {
   id: string;
-  initialMessages?: Array<Message>;
+  initialMessages?: Message[];
   isReadonly?: boolean;
   isHomePage?: boolean;
 }) {
@@ -55,7 +55,7 @@ export function Chat({
     },
   });
 
-  const [attachments, setAttachments] = useState<Array<Attachment>>([]);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
 
   const handleSubmit = async (
     event?: { preventDefault?: () => void },
@@ -86,8 +86,7 @@ export function Chat({
   };
 
   return (
-    <>
-      <div
+    <div
         className={`flex min-w-0 flex-col bg-background ${isHomePage ? "h-auto" : "h-[calc(100dvh-40px)]"}`}
       >
         {!isHomePage && <ChatHeader chatId={id} />}
@@ -125,6 +124,5 @@ export function Chat({
           )}
         </form>
       </div>
-    </>
   );
 }

@@ -2,7 +2,7 @@
 
 import { Check, Loader2 } from "lucide-react";
 
-import { ToolInvocation } from "ai";
+import type { ToolInvocation } from "ai";
 
 export function ToolStatus({ text, isLoading }: { text: string; isLoading: boolean }) {
   return (

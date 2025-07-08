@@ -2,7 +2,8 @@
 
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { codeToHtml } from "shiki";
 
 export type CodeBlockProps = {
@@ -56,7 +57,6 @@ function CodeBlockCode({
         });
         setHighlightedHtml(html);
       } catch (error) {
-        console.error("Error highlighting code:", error);
         setHighlightedHtml(`<pre><code>${code}</code></pre>`);
       }
     }
