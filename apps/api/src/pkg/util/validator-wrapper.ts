@@ -6,7 +6,7 @@ import type { ZodSchema } from "zod";
 
 export const zValidator = <T extends ZodSchema, Target extends keyof ValidationTargets>(
   target: Target,
-  schema: T,
+  schema: T
 ) =>
   zv(target, schema, (result, c) => {
     if (!result.success) {

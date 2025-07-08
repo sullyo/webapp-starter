@@ -44,13 +44,13 @@ function PureMultimodalInput({
   setMessages: Dispatch<SetStateAction<Array<Message>>>;
   append: (
     message: Message | CreateMessage,
-    chatRequestOptions?: ChatRequestOptions,
+    chatRequestOptions?: ChatRequestOptions
   ) => Promise<string | null | undefined>;
   handleSubmit: (
     event?: {
       preventDefault?: () => void;
     },
-    chatRequestOptions?: ChatRequestOptions,
+    chatRequestOptions?: ChatRequestOptions
   ) => void;
   className?: string;
   isHomePage?: boolean;
@@ -188,7 +188,7 @@ function PureMultimodalInput({
         onChange={handleInput}
         className={cn(
           "!text-sm max-h-[350px] min-h-[100px] resize-none overflow-y-auto rounded-xl bg-accent/70 pb-10",
-          className,
+          className
         )}
         rows={2}
         onKeyDown={(event) => {

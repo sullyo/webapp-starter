@@ -61,8 +61,8 @@ const chatRoutes = new Hono().use("*", auth(), requireAuth).post("/", async (c) 
         getErrorMessage(error) {
           return "An error occurred";
         },
-      }),
-    ),
+      })
+    )
   );
 });
 

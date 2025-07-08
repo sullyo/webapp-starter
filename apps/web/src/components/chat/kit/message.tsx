@@ -46,7 +46,7 @@ const MessageContent = ({
 }: MessageContentProps) => {
   const classNames = cn(
     "rounded-lg p-2 text-foreground bg-secondary prose break-words whitespace-normal",
-    className,
+    className
   );
 
   return markdown ? (

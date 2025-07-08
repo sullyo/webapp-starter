@@ -38,7 +38,7 @@ const PurePreviewMessage = ({
           {
             "w-full": mode === "edit",
             "group-data-[role=user]/message:w-fit": mode !== "edit",
-          },
+          }
         )}
       >
         <div className="flex w-full flex-col gap-4">
@@ -118,7 +118,7 @@ export const ThinkingMessage = () => {
           "flex w-full gap-4 rounded-xl group-data-[role=user]/message:ml-auto group-data-[role=user]/message:w-fit group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:px-3 group-data-[role=user]/message:py-2",
           {
             "group-data-[role=user]/message:bg-muted": true,
-          },
+          }
         )}
       >
         <div className="flex w-full flex-col gap-2">

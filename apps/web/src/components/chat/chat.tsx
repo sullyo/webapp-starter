@@ -59,7 +59,7 @@ export function Chat({
 
   const handleSubmit = async (
     event?: { preventDefault?: () => void },
-    chatRequestOptions?: any,
+    chatRequestOptions?: any
   ) => {
     if (event?.preventDefault) {
       event.preventDefault();

@@ -14,9 +14,10 @@
     "db:seed": "turbo run db:seed"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "turbo": "^2.5.0",
-    "typescript": "^5"
+    "@biomejs/biome": "2.0.6",
+    "turbo": "^2.5.4",
+    "typescript": "^5",
+    "ultracite": "^5.0.32"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {

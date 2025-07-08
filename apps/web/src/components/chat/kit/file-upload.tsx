@@ -166,7 +166,7 @@ function FileUploadContent({ className, ...props }: FileUploadContentProps) {
       className={cn(
         "fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm",
         "fade-in-0 slide-in-from-bottom-10 zoom-in-90 animate-in duration-150",
-        className,
+        className
       )}
       {...props}
     />

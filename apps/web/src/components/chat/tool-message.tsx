@@ -16,7 +16,10 @@ export function ToolStatus({ text, isLoading }: { text: string; isLoading: boole
 export function RenderToolInvocation({
   toolInvocation,
   isLoading,
-}: { toolInvocation: ToolInvocation; isLoading: boolean }) {
+}: {
+  toolInvocation: ToolInvocation;
+  isLoading: boolean;
+}) {
   const { toolName, toolCallId, state } = toolInvocation;
 
   if (state === "call") {

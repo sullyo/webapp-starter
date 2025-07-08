@@ -88,7 +88,7 @@ export function Header() {
         className={cn(
           "fixed inset-x-0 top-[68px] bottom-0 bg-background md:hidden",
           "border-t",
-          isMenuOpen ? "block" : "hidden",
+          isMenuOpen ? "block" : "hidden"
         )}
         id="mobile-menu"
         aria-labelledby="mobile-menu-button"

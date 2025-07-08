@@ -1,18 +1,18 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "bun",
-            "internalConsoleOptions": "neverOpen",
-            "request": "launch",
-            "name": "Debug API",
-            "program": "${workspaceFolder}/apps/api/src/index.ts",
-            "cwd": "${workspaceFolder}/apps/api",
-            "stopOnEntry": false,
-            "watchMode": true,
-            "env": {
-                "DOTENV_PATH": "${workspaceFolder}/apps/api/.env"
-            }
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "bun",
+      "internalConsoleOptions": "neverOpen",
+      "request": "launch",
+      "name": "Debug API",
+      "program": "${workspaceFolder}/apps/api/src/index.ts",
+      "cwd": "${workspaceFolder}/apps/api",
+      "stopOnEntry": false,
+      "watchMode": true,
+      "env": {
+        "DOTENV_PATH": "${workspaceFolder}/apps/api/.env"
+      }
+    }
+  ]
 }

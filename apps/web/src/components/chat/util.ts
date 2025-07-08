@@ -18,8 +18,8 @@ export function sanitizeUIMessages(messages: Array<Message>): Array<Message> {
       (part) =>
         (part.type === "tool-invocation" && part.toolInvocation.state === "result") ||
         toolResultIds.includes(
-          part.type === "tool-invocation" ? part.toolInvocation.toolCallId : "",
-        ),
+          part.type === "tool-invocation" ? part.toolInvocation.toolCallId : ""
+        )
     );
 
     return {
@@ -29,6 +29,6 @@ export function sanitizeUIMessages(messages: Array<Message>): Array<Message> {
   });
 
   return messagesBySanitizedToolInvocations.filter(
-    (message) => message.content.length > 0 || (message.parts && message.parts.length > 0),
+    (message) => message.content.length > 0 || (message.parts && message.parts.length > 0)
   );
 }
