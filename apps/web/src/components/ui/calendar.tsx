@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/nursery/noNestedComponentDefinitions: <explanation> */
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";

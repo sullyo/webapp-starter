@@ -1,13 +1,13 @@
+/** biome-ignore-all lint/a11y/useAriaPropsSupportedByRole: <explanation> */
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { Menu, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { Menu, X } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,33 +21,33 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link className="flex items-center space-x-2" href="/">
               <Image
-                src="https://placehold.co/40x40"
                 alt="Logo"
-                width={40}
-                height={40}
                 className="h-8 w-auto"
+                height={40}
+                src="https://placehold.co/40x40"
+                width={40}
               />
               <span className="font-bold text-xl">Logo</span>
             </Link>
           </div>
           <nav className="hidden space-x-4 md:flex">
             <Link
-              href="/about"
               className="font-medium text-muted-foreground text-sm hover:text-primary"
+              href="/about"
             >
               About
             </Link>
             <Link
-              href="/services"
               className="font-medium text-muted-foreground text-sm hover:text-primary"
+              href="/services"
             >
               Services
             </Link>
             <Link
-              href="/contact"
               className="font-medium text-muted-foreground text-sm hover:text-primary"
+              href="/contact"
             >
               Contact
             </Link>
@@ -57,27 +57,27 @@ export function Header() {
               <UserButton />
             </SignedIn>
             <SignedOut>
-              <Link href="/signin" className={buttonVariants({ variant: "ghost", size: "sm" })}>
+              <Link className={buttonVariants({ variant: "ghost", size: "sm" })} href="/signin">
                 Log in
               </Link>
-              <Link href="/signup" className={buttonVariants({ size: "sm" })}>
+              <Link className={buttonVariants({ size: "sm" })} href="/signup">
                 Sign up
               </Link>
             </SignedOut>
           </div>
           <Button
-            variant="ghost"
-            size="icon"
+            aria-controls="mobile-menu"
+            aria-expanded={isMenuOpen}
             className="md:hidden"
             onClick={toggleMenu}
-            aria-expanded={isMenuOpen}
-            aria-controls="mobile-menu"
+            size="icon"
+            variant="ghost"
           >
             <span className="sr-only">Open menu</span>
             {isMenuOpen ? (
-              <X className="size-6" aria-hidden="true" />
+              <X aria-hidden="true" className="size-6" />
             ) : (
-              <Menu className="size-6" aria-hidden="true" />
+              <Menu aria-hidden="true" className="size-6" />
             )}
           </Button>
         </div>
@@ -85,13 +85,13 @@ export function Header() {
 
       {/* Mobile menu */}
       <div
+        aria-labelledby="mobile-menu-button"
         className={cn(
           "fixed inset-x-0 top-[68px] bottom-0 bg-background md:hidden",
           "border-t",
           isMenuOpen ? "block" : "hidden"
         )}
         id="mobile-menu"
-        aria-labelledby="mobile-menu-button"
       >
         <div className="flex flex-col space-y-4 p-4">
           <div className="flex flex-col space-y-2">
@@ -99,12 +99,12 @@ export function Header() {
               <UserButton />
             </SignedIn>
             <SignedOut>
-              <Link href="/signup" className={buttonVariants({ size: "sm", className: "w-full" })}>
+              <Link className={buttonVariants({ size: "sm", className: "w-full" })} href="/signup">
                 Sign up
               </Link>
               <Link
-                href="/login"
                 className={buttonVariants({ variant: "ghost", size: "sm", className: "w-full" })}
+                href="/login"
               >
                 Log in
               </Link>
@@ -113,20 +113,20 @@ export function Header() {
 
           <nav className="flex flex-col space-y-4">
             <Link
-              href="/about"
               className="font-medium text-base text-muted-foreground hover:text-primary"
+              href="/about"
             >
               About
             </Link>
             <Link
-              href="/services"
               className="font-medium text-base text-muted-foreground hover:text-primary"
+              href="/services"
             >
               Services
             </Link>
             <Link
-              href="/contact"
               className="font-medium text-base text-muted-foreground hover:text-primary"
+              href="/contact"
             >
               Contact
             </Link>
