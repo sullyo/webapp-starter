@@ -83,10 +83,14 @@ export const moduleService = {
 - Implement request validation using zValidator. You can leverage the created zod schemas from drizzle zod.
 - Apply authentication middleware where needed
 - Structure routes logically by resource
-- Return consistent HTTP responses
+- **Use custom error classes instead of manual status responses** - Import from `@/pkg/errors` and throw appropriate errors
+- **Avoid wrapping route handlers in try-catch blocks** - let error middleware handle exceptions
+- Delegate all business logic and error handling to the service layer
 
 Example route implementation:
 ```ts
+import { NotFoundError } from "@/pkg/errors";
+
 const moduleRoutes = new Hono()
   .use(auth(),requireAuth)
   .get("/", async (c) => {
@@ -97,13 +101,14 @@ const moduleRoutes = new Hono()
     const data = c.req.valid("json");
     const userId = getUserId(c);
     const result = await moduleService.createItem({ ...data, userId });
-    // If results could be undefined or otherwise, we can throw http 
+    // If results could be undefined or otherwise, throw proper error
     if (!result){
-        // throw proper error code
-        throw new HTTPException(404, {message: ...})
+        throw new NotFoundError("Item not found");
     }
     return c.json(result);
   });
+
+  
 ```
 
 After the route is created, you must add it to the `apps/api/src/index.ts` route so its accessable by the frontend.
@@ -155,11 +160,35 @@ The project use turbo repo. To run everything, use the `turbo dev` script from t
 - Leverage zod for runtime validation
 
 ### Error Handling
-- Implement consistent error handlers
-- Use proper HTTP status codes
-- Return structured error responses
-- Handle edge cases appropriately
+- **Use custom error classes instead of manual JSON responses** - Import and throw errors from `@/pkg/errors/error`
+- Available error classes: `NotFoundError`, `BadRequestError`, `UnauthorizedError`, `ForbiddenError`, `ConflictError`, `UnprocessableEntityError`, `InternalServerError`, `TooManyRequestsError`
+- **NEVER return manual status responses** like `return c.json({error: "message"}, 401)` - always throw proper error classes
+- Implement consistent error handlers across all routes
+- Handle edge cases by throwing appropriate error classes
 - Use the logger from the package @repo/logger with object inside, i.e `logger.error({...})` instead of `console.error`
+
+#### Error Class Usage Examples:
+```ts
+// ❌ DON'T DO THIS
+if (!user) {
+  return c.json({ error: "User not found" }, 404);
+}
+
+// ✅ DO THIS INSTEAD
+import { NotFoundError, BadRequestError, ConflictError } from "@/pkg/errors";
+
+if (!user) {
+  throw new NotFoundError("User not found");    
+}
+
+if (email && await userExists(email)) {
+  throw new ConflictError("User with this email already exists");
+}
+
+if (!isValidInput(data)) {
+  throw new BadRequestError("Invalid input data provided");
+}
+```
 
 ### Authentication & Authorization
 - Use Clerk middleware for authentication

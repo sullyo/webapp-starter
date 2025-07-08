@@ -10,7 +10,7 @@ export const zValidator = <T extends ZodSchema, Target extends keyof ValidationT
 ) =>
   zv(target, schema, (result, c) => {
     if (!result.success) {
-      logger.error(result.error);
+      logger.error({ error: result.error }, "Zod validation error");
       throw new HTTPException(400, { cause: result.error });
     }
   });

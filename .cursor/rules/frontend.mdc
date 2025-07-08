@@ -24,22 +24,28 @@ You are an expert TypeScript software engineer and architect with over 10 years 
 - Some shadcn/ui components have been improved. 
 
 ### Component colocation
-When building Next.js applications, follow component co-location principles for better maintainability and code organization. Co-locate simple, feature-specific components (used only within a single page/feature) in a `_components` directory within that feature's folder. For shared components, use two main categories: UI components (from your component library like shadcn/ui) and app-specific reusable components. The folder structure should look like this:
+When building Next.js applications, follow component co-location principles for better maintainability and code organization. Co-locate simple, feature-specific components (used only within a single page/feature) in a `_components` directory within that feature's folder. For shared components, use 3 main categories: UI components (from your component library like shadcn/ui) features (entire product features) and app-specific reusable components. The folder structure should look like this:
 apps/
   └── web/
       └── src/
           ├── app/
-          │   └── [feature]/
+          │   └── [feature-page-name]/
           │       ├── page.tsx
-          │       └── _components/    # highly specific feature components (e.g., dashboard-stats.tsx)
-          └── components/            
-              ├── ui/                # Component library components (shadcn/ui)
-              │   ├── button.tsx
-              │   └── card.tsx
-              └── layout/       # App specific, shared components, or if the feature is very large/complex put, create its own folder     
-                  ├── header.tsx
-                  └── footer.tsx
-              └── forms/            
+          │       └── _components/    # highly page specific components  (e.g., layout-card.tsx, feature-grid.tsx etc)
+          ├── components/            
+          │   ├── ui/              # Component library components (shadcn/ui)
+          │   │   ├── button.tsx
+          │   │   └── card.tsx
+          │   └── layout/          # App specific, shared layout components
+          │       ├── header.tsx
+          │       └── footer.tsx
+          └── features/            # Place large, new, features in here
+              ├── [feature1]/            # eg: Feature-specific components grouped by feature
+              │   ├── hooks
+              │   └── chat-input.tsx
+              └── [feature2]/
+                  ├── toolbar.tsx
+                  └── canvas.tsx
 
 Note sometimes, when a feature gets large and complex, it makes more sense to put it in the `component` folder instead, since it is more maintainable.
 
@@ -76,29 +82,123 @@ Components that require React hooks or are interactive (like buttons, switches, 
 Otherwise, Next.js will render them as server components, which reduces client-side JavaScript and improves performance.
 
 ### Typesafe rpc client with react query
-When fetching data from the backend api, create functions in `src/api/name.api.ts`
-For example:
+When fetching data from the backend api, create functions AND hooks in `src/api/name.api.ts` following this three-step pattern:
+
+#### 1. Define RPC endpoints and infer types at the top
+First, extract the RPC endpoints and create type definitions using `InferRequestType` and `InferResponseType`:
+
 ```ts
-import { apiRpc, getApiClient, InferRequestType, callRpc } from "./client";
+import { useQuery, useQueryClient, useMutation, useInfiniteQuery } from "@tanstack/react-query";
+import { InferRequestType, apiRpc, getApiClient, callRpc, InferResponseType } from "./client";
+import { toast } from "sonner";
 
-const $createPost = apiRpc.posts.$post;
-// Simple get
-export async function getPosts() {
+// Define RPC endpoints
+const $getProjects = apiRpc.projects.$get;
+const $getProject = apiRpc.projects[`:id`].$get;
+const $updateProject = apiRpc.projects[`:id`].$patch;
+const $createProject = apiRpc.projects.$post;
+
+// Request types
+export type GetProjectsParams = InferRequestType<typeof $getProjects>;
+export type GetProjectParams = InferRequestType<typeof $getProject>;
+export type UpdateProjectParams = InferRequestType<typeof $updateProject>;
+export type CreateProjectParams = InferRequestType<typeof $createProject>;
+
+// Response types
+export type GetProjectsResponseType = InferResponseType<typeof $getProjects, 200>;
+export type GetProjectResponseType = InferResponseType<typeof $getProject, 200>;
+export type UpdateProjectResponseType = InferResponseType<typeof $updateProject, 200>;
+export type CreateProjectResponseType = InferResponseType<typeof $createProject, 200>;
+```
+
+#### 2. Create async API methods
+Define async functions that call the RPC endpoints:
+
+```ts
+export async function createProject(params: CreateProjectParams) {
   const client = await getApiClient();
-
-  return callRpc(client.posts.$get());
+  return await callRpc(client.projects.$post(params));
 }
-// Safely leverage the typed params elsewhere within the nextjs application 
-export type CreatePostParams = InferRequestType<typeof $createPost>["json"];
-export async function createPost(params: CreatePostParams) {
+
+export async function getProject(params: GetProjectParams) {
   const client = await getApiClient();
-  // This returns fully typed response, we do not need to create a response interface
-  return callRpc(client.posts.$post({ json: params }));
+  return await callRpc(client.projects[`:id`].$get(params));
+}
+
+export async function updateProject(params: UpdateProjectParams) {
+  const client = await getApiClient();
+  return await callRpc(client.projects[`:id`].$patch(params));
+}
+
+export async function getProjects(params: GetProjectsParams) {
+  const client = await getApiClient();
+  return await callRpc(client.projects.$get(params));
 }
 ```
 
-### Response types
-Creating response types when using the rpc client is not required. The hono-rpc we use lets us infer the response types safely.
+#### 3. Create TanStack Query hooks
+Build React Query hooks using the async methods and proper types:
+
+```ts
+
+export const useGetProject = (params: GetProjectParams) => {
+  const query = useQuery({
+    enabled: !!params.param.id,
+    queryKey: ["project", { id: params.param.id }],
+    queryFn: async () => {
+      return await getProject(params);
+    },
+  });
+
+  return query;
+};
+
+export const useUpdateProject = (id: string) => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation<UpdateProjectResponseType, Error, UpdateProjectParams>({
+    mutationKey: ["project", { id }],
+    mutationFn: async (params) => {
+      return await updateProject(params);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["project", { id }] });
+    },
+    onError: () => {
+      toast.error("Failed to update project");
+    },
+  });
+
+  return mutation;
+};
+
+export const useCreateProject = () => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation<CreateProjectResponseType, Error, CreateProjectParams>({
+    mutationKey: ["project", "create"],
+    mutationFn: async (params) => {
+      return await createProject(params);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+    onError: () => {
+      toast.error("Failed to create project");
+    },
+  });
+
+  return mutation;
+};
+```
+
+### Key Benefits of This Pattern
+- **Full type safety**: Request and response types are automatically inferred from the backend
+- **Separation of concerns**: API methods are separate from React Query logic
+- **Reusability**: API methods can be used outside of React components if needed
+- **Consistent error handling**: Centralized error handling with toast notifications
+- **Cache management**: Proper query key structure and invalidation patterns
 
 
 
