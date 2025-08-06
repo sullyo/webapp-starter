@@ -1,23 +1,23 @@
+/** biome-ignore-all lint/performance/useTopLevelRegex: <explanation> */
 "use client";
 
+import { ArrowUpIcon, StopCircle } from "lucide-react";
+import type React from "react";
+import { useCallback } from "react";
+
+import { Button } from "@/components/ui/button";
+import type { ChatHelpers } from "@/features/chat/chat.types";
+import { type DraftData, NEW_CHAT_DRAFT_KEY } from "@/features/chat/hooks/use-chat-drafts";
 import {
   PromptInput,
   PromptInputAction,
   PromptInputActions,
   PromptInputTextarea,
-} from "@/components/prompt-kit/prompt-input";
-import { Button } from "@/components/ui/button";
-
-import { ArrowUpIcon, StopIcon } from "@phosphor-icons/react";
-import React, { useCallback } from "react";
-
+} from "@/features/chat/kit/prompt-input";
+import { useOnMountUnsafe } from "@/hooks/use-on-mount-unsafe";
 import { ButtonFileUpload } from "./button-file-upload";
 import { ButtonSearch } from "./button-search";
 import { FileList } from "./file-list";
-
-import { chatDataPartSchemas, ChatHelpers } from "@/features/chat/types";
-import { DraftData, NEW_CHAT_DRAFT_KEY } from "@/features/chat/hooks/use-chat-drafts";
-import { useOnMountUnsafe } from "@/hooks/use-on-mount-unsafe";
 
 type ChatInputProps = {
   value: string;
@@ -101,7 +101,7 @@ export function ChatInput({
         onSend();
       }
     },
-    [isSubmitting, onSend, status, value],
+    [isSubmitting, onSend, status, value]
   );
 
   const handlePaste = useCallback(
@@ -126,7 +126,7 @@ export function ChatInput({
               const newFile = new File(
                 [file],
                 `pasted-image-${Date.now()}.${file.type.split("/")[1]}`,
-                { type: file.type },
+                { type: file.type }
               );
               imageFiles.push(newFile);
             }
@@ -138,7 +138,7 @@ export function ChatInput({
         }
       }
     },
-    [onFileUpload],
+    [onFileUpload]
   );
 
   useOnMountUnsafe(() => {
@@ -158,19 +158,16 @@ export function ChatInput({
         <PromptInput className="relative z-10 bg-popover p-0 pt-1 shadow-xs backdrop-blur-xl">
           <FileList files={files} onFileRemove={onFileRemove} />
           <PromptInputTextarea
-            placeholder="Ask Cospark"
-            onKeyDown={handleKeyDown}
-            maxHeight={200}
-            value={value}
-            onValueChange={(value) => {
-              onValueChange(value);
-            }}
-            disabled={isSubmitting}
             className="min-h-[44px] pt-3 pl-4 text-base leading-[1.3] sm:text-base md:text-base"
+            disabled={isSubmitting}
+            onChange={(e) => onValueChange(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask anything..."
+            value={value}
           />
           <PromptInputActions className="mt-5 w-full justify-between px-3 pb-3">
             <div className="flex gap-2">
-              <ButtonFileUpload onFileUpload={onFileUpload} model={selectedModel} />
+              <ButtonFileUpload model={selectedModel} onFileUpload={onFileUpload} />
               {/* <ModelSelector
                 selectedModelId={selectedModel}
                 setSelectedModelId={onSelectModel}
@@ -181,15 +178,15 @@ export function ChatInput({
             </div>
             <PromptInputAction tooltip={status === "streaming" ? "Stop" : "Send"}>
               <Button
-                size="sm"
+                aria-label={status === "streaming" ? "Stop" : "Send message"}
                 className="size-9 rounded-full transition-all duration-300 ease-out"
                 disabled={!value || isSubmitting || isOnlyWhitespace(value)}
-                type="button"
                 onClick={handleSend}
-                aria-label={status === "streaming" ? "Stop" : "Send message"}
+                size="sm"
+                type="button"
               >
                 {status === "streaming" ? (
-                  <StopIcon className="size-4" />
+                  <StopCircle className="size-4" />
                 ) : (
                   <ArrowUpIcon className="size-4" />
                 )}

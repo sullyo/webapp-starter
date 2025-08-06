@@ -1,5 +1,5 @@
-import { CaretDownIcon } from "@phosphor-icons/react";
-import { AnimatePresence, motion } from "motion/react";
+import { ChevronDown } from "lucide-react";
+import { AnimatePresence, motion, type Transition } from "motion/react";
 import { useEffect, useState } from "react";
 import { Loader } from "@/features/chat/kit/loader";
 import { Markdown } from "@/features/chat/kit/markdown";
@@ -10,7 +10,7 @@ type ReasoningProps = {
   isReasoning?: boolean;
 };
 
-const TRANSITION = {
+const TRANSITION: Transition = {
   type: "spring",
   duration: 0.2,
   bounce: 0,
@@ -41,7 +41,7 @@ export function Reasoning({ reasoning, isReasoning = false }: ReasoningProps) {
         ) : (
           <span>Thinking</span>
         )}
-        <CaretDownIcon
+        <ChevronDown
           className={cn("size-3 transition-transform", isExpanded ? "rotate-180" : "")}
         />
       </button>

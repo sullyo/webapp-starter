@@ -1,9 +1,10 @@
-import { UIMessage as MessageType } from "ai";
-import React, { memo, useState } from "react";
+import type { UIMessage as MessageType } from "ai";
 import equal from "fast-deep-equal";
+import { memo, useState } from "react";
+
+import type { ChatUIMessage } from "@/features/chat/chat.types";
 import { MessageAssistant } from "./message-assistant";
 import { MessageUser } from "./message-user";
-import { MessageParts } from "@/features/chat/types";
 
 type MessageProps = {
   variant: MessageType["role"];
@@ -13,7 +14,7 @@ type MessageProps = {
   onEdit: (id: string, newText: string) => void;
   onReload: () => void;
   hasScrollAnchor?: boolean;
-  parts?: MessageParts;
+  parts?: ChatUIMessage["parts"];
   status?: "streaming" | "ready" | "submitted" | "error";
 };
 
@@ -35,7 +36,7 @@ function MessageComponent({
       parts
         ?.filter((part) => part.type === "text")
         .map((part) => part.text)
-        .join("") ?? "",
+        .join("") ?? ""
     );
     setCopied(true);
     setTimeout(() => setCopied(false), 500);
@@ -46,12 +47,12 @@ function MessageComponent({
       <MessageUser
         copied={copied}
         copyToClipboard={copyToClipboard}
+        hasScrollAnchor={hasScrollAnchor}
+        id={id}
+        onDelete={onDelete}
+        onEdit={onEdit}
         onReload={onReload}
         parts={parts}
-        onEdit={onEdit}
-        onDelete={onDelete}
-        id={id}
-        hasScrollAnchor={hasScrollAnchor}
       />
     );
   }
@@ -61,9 +62,9 @@ function MessageComponent({
       <MessageAssistant
         copied={copied}
         copyToClipboard={copyToClipboard}
-        onReload={onReload}
-        isLast={isLast}
         hasScrollAnchor={hasScrollAnchor}
+        isLast={isLast}
+        onReload={onReload}
         parts={parts}
         status={status}
       />

@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { Markdown } from "./markdown";
 
@@ -25,7 +25,7 @@ export type MessageAvatarProps = {
 const MessageAvatar = ({ src, alt, fallback, delayMs, className }: MessageAvatarProps) => {
   return (
     <Avatar className={cn("h-8 w-8 shrink-0", className)}>
-      <AvatarImage src={src} alt={alt} />
+      <AvatarImage alt={alt} src={src} />
       {fallback && <AvatarFallback delayMs={delayMs}>{fallback}</AvatarFallback>}
     </Avatar>
   );
@@ -35,17 +35,21 @@ export type MessageContentProps = {
   children: React.ReactNode;
   markdown?: boolean;
   className?: string;
+  messageRole?: "user" | "assistant";
 } & React.ComponentProps<typeof Markdown> &
   React.HTMLProps<HTMLDivElement>;
 
 const MessageContent = ({
   children,
   markdown = false,
+  messageRole,
   className,
   ...props
 }: MessageContentProps) => {
   const classNames = cn(
-    "prose whitespace-normal break-words rounded-lg bg-secondary p-2 text-foreground",
+    messageRole === "user"
+      ? "prose dark:prose-invert whitespace-normal break-words rounded-4xl bg-muted px-3 py-2 text-foreground"
+      : "",
     className
   );
 
@@ -86,12 +90,14 @@ const MessageAction = ({
   ...props
 }: MessageActionProps) => {
   return (
-    <Tooltip {...props}>
-      <TooltipTrigger asChild>{children}</TooltipTrigger>
-      <TooltipContent side={side} className={className}>
-        {tooltip}
-      </TooltipContent>
-    </Tooltip>
+    <TooltipProvider>
+      <Tooltip {...props}>
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
+        <TooltipContent className={className} side={side}>
+          {tooltip}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 

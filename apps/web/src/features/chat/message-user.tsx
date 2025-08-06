@@ -187,7 +187,6 @@ export function MessageUser({
             }}
             markdown={true}
             ref={contentRef}
-            variant="none"
           >
             {textParts.map((part) => part.text).join("")}
           </MessageContent>

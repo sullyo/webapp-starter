@@ -1,6 +1,8 @@
 import equal from "fast-deep-equal";
-import { CheckIcon, CopyIcon, RotateCcw } from "lucide-react";
+import { Copy, ThumbsDown, ThumbsUp } from "lucide-react";
 import { memo } from "react";
+import { Button } from "@/components/ui/button";
+import type { ChatUIMessage } from "@/features/chat/chat.types";
 import {
   Message,
   MessageAction,
@@ -8,10 +10,7 @@ import {
   MessageContent,
 } from "@/features/chat/kit/message";
 import { Reasoning } from "@/features/chat/kit/reasoning";
-import { DocumentTool } from "@/features/chat/tools/document-tool";
 import { cn } from "@/lib/utils";
-import { getSources } from "./get-sources";
-import { SearchImages } from "./search-images";
 
 type MessageAssistantProps = {
   isLast?: boolean;
@@ -19,7 +18,7 @@ type MessageAssistantProps = {
   copied?: boolean;
   copyToClipboard?: () => void;
   onReload?: () => void;
-  parts?: MessageParts;
+  parts?: ChatUIMessage["parts"];
   status?: "streaming" | "ready" | "submitted" | "error";
 };
 
@@ -32,29 +31,10 @@ function MessageAssistantComponent({
   parts,
   status,
 }: MessageAssistantProps) {
-  const sources = getSources(parts ?? []);
   const isLastStreaming = status === "streaming" && isLast;
 
   const textParts = parts?.filter((part) => part.type === "text") ?? [];
   const hasTextContent = textParts.length > 0 && textParts.some((part) => part.text?.trim());
-
-  const searchImageResults =
-    parts
-      ?.filter(
-        (part) =>
-          part.type === "tool-invocation" &&
-          part.toolInvocation?.state === "result" &&
-          part.toolInvocation?.toolName === "imageSearch" &&
-          part.toolInvocation?.result?.content?.[0]?.type === "images"
-      )
-      .flatMap((part) =>
-        part.type === "tool-invocation" &&
-        part.toolInvocation?.state === "result" &&
-        part.toolInvocation?.toolName === "imageSearch" &&
-        part.toolInvocation?.result?.content?.[0]?.type === "images"
-          ? (part.toolInvocation?.result?.content?.[0]?.results ?? [])
-          : []
-      ) ?? [];
 
   return (
     <Message
@@ -75,18 +55,10 @@ function MessageAssistantComponent({
 
           if (part.type === "text") {
             return (
-              <MessageContent key={partKey} markdown={true} messageRole="assistant">
+              <MessageContent key={partKey} markdown={true}>
                 {part.text || ""}
               </MessageContent>
             );
-          }
-
-          if (part.type === "data-createDocument") {
-            return <DocumentTool data={part.data} key={partKey} />;
-          }
-
-          if (part.type === "data-updateDocument") {
-            return <DocumentTool data={part.data} key={partKey} />;
           }
 
           // if (part.type === "tool-invocation") {
@@ -97,36 +69,27 @@ function MessageAssistantComponent({
           return null;
         })}
 
-        {/* Render search images if any */}
-        {searchImageResults.length > 0 && <SearchImages results={searchImageResults} />}
-
-        {/* Render sources if any */}
-        {sources && sources.length > 0 && <SourcesList sources={sources} />}
-
-        {/* Render actions if not streaming and has content */}
         {!isLastStreaming && hasTextContent && (
           <MessageActions
-            className={cn("-ml-2 flex gap-0 opacity-0 transition-opacity group-hover:opacity-100")}
+            className={cn(
+              "-ml-2.5 flex gap-0 opacity-0 transition-opacity duration-150 group-hover:opacity-100",
+              isLast && "opacity-100"
+            )}
           >
-            <MessageAction side="bottom" tooltip={copied ? "Copied!" : "Copy text"}>
-              <button
-                aria-label="Copy text"
-                className="flex size-7.5 items-center justify-center rounded-full bg-transparent text-muted-foreground transition hover:bg-accent/60 hover:text-foreground"
-                onClick={copyToClipboard}
-                type="button"
-              >
-                {copied ? <CheckIcon className="size-4" /> : <CopyIcon className="size-4" />}
-              </button>
+            <MessageAction delayDuration={100} tooltip="Copy">
+              <Button className="rounded-full" size="icon" variant="ghost">
+                <Copy />
+              </Button>
             </MessageAction>
-            <MessageAction delayDuration={0} side="bottom" tooltip="Regenerate">
-              <button
-                aria-label="Regenerate"
-                className="flex size-7.5 items-center justify-center rounded-full bg-transparent text-muted-foreground transition hover:bg-accent/60 hover:text-foreground"
-                onClick={onReload}
-                type="button"
-              >
-                <RotateCcw className="size-4" />
-              </button>
+            <MessageAction delayDuration={100} tooltip="Upvote">
+              <Button className="rounded-full" size="icon" variant="ghost">
+                <ThumbsUp />
+              </Button>
+            </MessageAction>
+            <MessageAction delayDuration={100} tooltip="Downvote">
+              <Button className="rounded-full" size="icon" variant="ghost">
+                <ThumbsDown />
+              </Button>
             </MessageAction>
           </MessageActions>
         )}
@@ -135,7 +98,6 @@ function MessageAssistantComponent({
   );
 }
 export const MessageAssistant = memo(MessageAssistantComponent, (prevProps, nextProps) => {
-  // If this is the last message and it's streaming, always re-render
   if (nextProps.isLast && nextProps.status === "streaming") {
     return false;
   }
@@ -144,13 +106,10 @@ export const MessageAssistant = memo(MessageAssistantComponent, (prevProps, next
 
   if (prevProps.isLast !== nextProps.isLast) return false;
 
-  // Deep compare parts to catch any changes
   if (!equal(prevProps.parts, nextProps.parts)) return false;
 
-  // Check other props
   if (prevProps.copied !== nextProps.copied) return false;
   if (prevProps.hasScrollAnchor !== nextProps.hasScrollAnchor) return false;
 
-  // Functions are assumed to be stable
   return true;
 });

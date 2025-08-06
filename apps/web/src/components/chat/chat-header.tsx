@@ -1,13 +1,11 @@
 "use client";
 
-import { memo } from "react";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-
+import { memo } from "react";
 import { useIsMounted, useWindowSize } from "usehooks-ts";
-
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Plus } from "lucide-react";
 
 function PureChatHeader({ chatId }: { chatId: string }) {
   const router = useRouter();
@@ -21,12 +19,12 @@ function PureChatHeader({ chatId }: { chatId: string }) {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              variant="outline"
               className="order-2 ml-auto px-2 md:order-1 md:ml-0 md:h-fit md:px-2"
               onClick={() => {
                 router.push("/chat");
                 router.refresh();
               }}
+              variant="outline"
             >
               <Plus />
               <span className="md:sr-only">New Chat</span>

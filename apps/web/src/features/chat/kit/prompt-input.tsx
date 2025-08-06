@@ -1,10 +1,9 @@
 "use client";
 
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import type React from "react";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 type PromptInputContextType = {
   isLoading: boolean;
@@ -13,6 +12,7 @@ type PromptInputContextType = {
   maxHeight: number | string;
   onSubmit?: () => void;
   disabled?: boolean;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
 };
 
 const PromptInputContext = createContext<PromptInputContextType>({
@@ -22,6 +22,7 @@ const PromptInputContext = createContext<PromptInputContextType>({
   maxHeight: 240,
   onSubmit: undefined,
   disabled: false,
+  textareaRef: React.createRef<HTMLTextAreaElement>(),
 });
 
 function usePromptInput() {
@@ -52,6 +53,7 @@ function PromptInput({
   children,
 }: PromptInputProps) {
   const [internalValue, setInternalValue] = useState(value || "");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleChange = (newValue: string) => {
     setInternalValue(newValue);
@@ -66,11 +68,19 @@ function PromptInput({
         setValue: onValueChange ?? handleChange,
         maxHeight,
         onSubmit,
+        textareaRef,
       }}
     >
-      <div className={cn("rounded-3xl border border-input bg-background p-2 shadow-xs", className)}>
+      <button
+        className={cn(
+          "w-full cursor-text rounded-3xl border border-input bg-background p-2 text-left shadow-xs",
+          className
+        )}
+        onClick={() => textareaRef.current?.focus()}
+        type="button"
+      >
         {children}
-      </div>
+      </button>
     </PromptInputContext.Provider>
   );
 }
@@ -85,8 +95,7 @@ function PromptInputTextarea({
   disableAutosize = false,
   ...props
 }: PromptInputTextareaProps) {
-  const { value, setValue, maxHeight, onSubmit, disabled } = usePromptInput();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { value, setValue, maxHeight, onSubmit, disabled, textareaRef } = usePromptInput();
 
   useEffect(() => {
     if (disableAutosize) return;
@@ -109,16 +118,16 @@ function PromptInputTextarea({
 
   return (
     <Textarea
-      ref={textareaRef}
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      onKeyDown={handleKeyDown}
       className={cn(
         "min-h-[44px] w-full resize-none border-none bg-transparent text-primary shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
         className
       )}
-      rows={1}
       disabled={disabled}
+      onChange={(e) => setValue(e.target.value)}
+      onKeyDown={handleKeyDown}
+      ref={textareaRef}
+      rows={1}
+      value={value}
       {...props}
     />
   );
@@ -155,7 +164,7 @@ function PromptInputAction({
       <TooltipTrigger asChild disabled={disabled}>
         {children}
       </TooltipTrigger>
-      <TooltipContent side={side} className={className}>
+      <TooltipContent className={className} side={side}>
         {tooltip}
       </TooltipContent>
     </Tooltip>

@@ -7,16 +7,10 @@ import { AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import {
-  ChatInput,
-  Conversation,
-  useChatDraft,
-  useChatFileUpload,
-  useChatHandlers,
-} from "@/features/chat";
+import { ChatInput, Conversation, useChatHandlers } from "@/features/chat";
+import { useChatDraft } from "@/features/chat/hooks/use-chat-drafts";
 import { chatUrl, customFetcher } from "@/lib/fetcher";
 import { cn } from "@/lib/utils";
-
 import type { ChatUIMessage } from "./chat.types";
 
 export function Chat({
@@ -34,51 +28,43 @@ export function Chat({
   const [input, setInput] = useState("");
   const { clearDraft, getDraft } = useChatDraft(id);
 
-  const {
-    files,
-    setFiles,
-    handleFileUploads,
-    createOptimisticAttachments,
-    cleanupOptimisticAttachments,
-    handleFileUpload,
-    handleFileRemove,
-  } = useChatFileUpload();
   const [selectedModel, setSelectedModel] = useState("gpt-4o-mini");
 
   useEffect(() => {
     setMessages(initialMessages);
   }, [initialMessages]);
 
-  const { messages, sendMessage, status, setMessages, reload, stop } = useChat({
-    id: id ?? undefined,
-    messages: initialMessages,
-    transport: new DefaultChatTransport({
-      api: chatUrl,
-      fetch: customFetcher as typeof fetch,
-      prepareRequest: ({ messages }) => {
-        return {
-          body: {
-            message: messages[messages.length - 1],
-            chatId: id,
-            model: selectedModel,
-          },
-        };
-      },
-    }),
-    dataPartSchemas: chatDataPartSchemas,
-    onError: (error) => {
-      if (error) {
-        let errorMsg = "Something went wrong.";
-        try {
-          const parsed = JSON.parse(error.message);
-          errorMsg = parsed.error || errorMsg;
-        } catch {
-          errorMsg = error.message || errorMsg;
+  const { error, status, sendMessage, messages, setMessages, regenerate, stop } =
+    useChat<ChatUIMessage>({
+      id: id ?? undefined,
+      messages: initialMessages,
+      transport: new DefaultChatTransport({
+        api: chatUrl,
+        fetch: customFetcher as typeof fetch,
+        prepareSendMessagesRequest: ({ messages }) => {
+          return {
+            body: {
+              messages,
+              chatId: id,
+              model: selectedModel,
+            },
+          };
+        },
+      }),
+
+      onError: (error) => {
+        if (error) {
+          let errorMsg = "Something went wrong.";
+          try {
+            const parsed = JSON.parse(error.message);
+            errorMsg = parsed.error || errorMsg;
+          } catch {
+            errorMsg = error.message || errorMsg;
+          }
+          toast.error(errorMsg);
         }
-        toast.error(errorMsg);
-      }
-    },
-  });
+      },
+    });
 
   const { handleInputChange, handleModelChange, handleDelete, handleEdit } = useChatHandlers({
     messages,
@@ -91,8 +77,6 @@ export function Chat({
 
   const submit = async () => {
     setIsSubmitting(true);
-
-    const optimisticAttachments = files.length > 0 ? createOptimisticAttachments(files) : [];
 
     setInput("");
 
@@ -148,7 +132,7 @@ export function Chat({
       },
     };
 
-    reload(options);
+    regenerate(options);
   };
 
   return (
@@ -180,13 +164,13 @@ export function Chat({
         <ChatInput
           chatId={id}
           clearDraft={clearDraft}
-          files={files}
+          files={[]}
           getDraft={getDraft}
           hasSuggestions={false}
           isSubmitting={isSubmitting}
           messageCount={messages.length}
-          onFileRemove={handleFileRemove}
-          onFileUpload={handleFileUpload}
+          onFileRemove={() => {}}
+          onFileUpload={() => {}}
           onSelectModel={handleModelChange}
           onSend={submit}
           onSuggestion={handleSuggestion}

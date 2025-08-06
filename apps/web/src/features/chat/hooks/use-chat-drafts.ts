@@ -1,5 +1,5 @@
 "use client";
-import { FileUIPart } from "ai";
+import type { FileUIPart } from "ai";
 import { useCallback, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 
@@ -37,7 +37,7 @@ export function useChatDraft(chatId: string | null) {
     (draftId?: string): DraftData | null => {
       return draftsStore.drafts[draftId || draftKey] || null;
     },
-    [draftKey, draftsStore.drafts],
+    [draftKey, draftsStore.drafts]
   );
 
   const updateInput = useCallback(
@@ -61,7 +61,7 @@ export function useChatDraft(chatId: string | null) {
         };
       });
     },
-    [draftKey, setDraftsStore],
+    [draftKey, setDraftsStore]
   );
 
   const updateAttachments = useCallback(
@@ -87,7 +87,7 @@ export function useChatDraft(chatId: string | null) {
         };
       });
     },
-    [draftKey, setDraftsStore],
+    [draftKey, setDraftsStore]
   );
 
   const updateDraft = useCallback(
@@ -116,7 +116,7 @@ export function useChatDraft(chatId: string | null) {
         };
       });
     },
-    [draftKey, setDraftsStore],
+    [draftKey, setDraftsStore]
   );
 
   const clearDraft = useCallback(
@@ -139,7 +139,7 @@ export function useChatDraft(chatId: string | null) {
         setAttachments([]);
       }
     },
-    [draftKey, setDraftsStore],
+    [draftKey, setDraftsStore]
   );
 
   const draft = getDraft();
