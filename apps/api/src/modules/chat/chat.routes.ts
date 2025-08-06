@@ -39,7 +39,7 @@ export const chatRoutes = new Hono().use("*", auth(), requireAuth).post("/", asy
             thinking: { type: "enabled", budgetTokens: 1024 },
           },
           anthropic: {
-            thinking: { type: "disabled", budgetTokens: 1024 },
+            thinking: { type: "enabled", budgetTokens: 1024 },
           },
         },
         system: "You are a helpful assistant.",

@@ -10,6 +10,7 @@ import {
   MessageContent,
 } from "@/features/chat/kit/message";
 import { Reasoning } from "@/features/chat/kit/reasoning";
+import { Tool, type ToolPart } from "@/features/chat/kit/tool-invocation";
 import { cn } from "@/lib/utils";
 
 type MessageAssistantProps = {
@@ -20,6 +21,12 @@ type MessageAssistantProps = {
   onReload?: () => void;
   parts?: ChatUIMessage["parts"];
   status?: "streaming" | "ready" | "submitted" | "error";
+};
+
+const renderToolPart = (part: ChatUIMessage["parts"][number], index: number): React.ReactNode => {
+  if (!part.type?.startsWith("tool-")) return null;
+
+  return <Tool key={`${part.type}-${index}`} toolPart={part as ToolPart} />;
 };
 
 function MessageAssistantComponent({
@@ -68,11 +75,10 @@ function MessageAssistantComponent({
             );
           }
 
-          // if (part.type === "tool-invocation") {
-          //   return <ToolInvocation key={partKey} toolInvocations={[part]} />;
-          // }
+          if (part.type.startsWith("tool-")) {
+            return renderToolPart(part, index);
+          }
 
-          // Skip step-start and other part types
           return null;
         })}
 

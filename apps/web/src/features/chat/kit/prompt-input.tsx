@@ -71,16 +71,15 @@ function PromptInput({
         textareaRef,
       }}
     >
-      <button
+      <div
         className={cn(
-          "w-full cursor-text rounded-3xl border border-input bg-background p-2 text-left shadow-xs",
+          "cursor-text rounded-3xl border border-input bg-background p-2 shadow-xs",
           className
         )}
         onClick={() => textareaRef.current?.focus()}
-        type="button"
       >
         {children}
-      </button>
+      </div>
     </PromptInputContext.Provider>
   );
 }

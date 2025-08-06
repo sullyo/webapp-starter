@@ -1,6 +1,8 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.0.5/schema.json",
-  "extends": ["ultracite"],
+  "extends": [
+    "ultracite"
+  ],
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -44,7 +46,13 @@
       },
       "nursery": {
         "useIterableCallbackReturn": "off",
-        "noShadow": "off"
+        "noShadow": "off",
+        "noNoninteractiveElementInteractions": "off"
+      },
+      "a11y": {
+        "noStaticElementInteractions": "off",
+        "useKeyWithClickEvents": "off",
+        "useSemanticElements": "off"
       },
       "performance": {
         "noNamespaceImport": "off",
