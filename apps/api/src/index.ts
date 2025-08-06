@@ -4,7 +4,7 @@ import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
-import { chatRoutes } from "@/modules/chat/chat.router";
+import { chatRoutes } from "@/modules/chat/chat.routes";
 import { postRoutes } from "@/modules/posts";
 import { webhookRoutes } from "@/modules/webhooks/webhook.routes";
 

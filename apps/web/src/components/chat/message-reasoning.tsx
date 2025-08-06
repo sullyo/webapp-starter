@@ -1,10 +1,9 @@
 "use client";
 
-import { Markdown } from "@/components/chat/kit/markdown";
 import { ChevronDownIcon, LoaderIcon } from "lucide-react";
-import { motion } from "motion/react";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
+import { Markdown } from "@/features/chat/kit/markdown";
 
 interface MessageReasoningProps {
   isLoading: boolean;
@@ -40,12 +39,12 @@ export function MessageReasoning({ isLoading, reasoning }: MessageReasoningProps
         </div>
       ) : (
         <button
-          data-testid="message-reasoning-toggle"
-          type="button"
           className="flex w-full cursor-pointer flex-row items-center gap-2"
+          data-testid="message-reasoning-toggle"
           onClick={() => {
             setIsExpanded(!isExpanded);
           }}
+          type="button"
         >
           <div className="text-[15px]">Thought for a few seconds</div>
           <ChevronDownIcon
@@ -57,15 +56,15 @@ export function MessageReasoning({ isLoading, reasoning }: MessageReasoningProps
       <AnimatePresence initial={false}>
         {isExpanded && (
           <motion.div
-            data-testid="message-reasoning"
-            key="content"
-            initial="collapsed"
             animate="expanded"
-            exit="collapsed"
-            variants={variants}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            style={{ overflow: "hidden" }}
             className="flex flex-col gap-4 border-l pl-4 text-[15px]"
+            data-testid="message-reasoning"
+            exit="collapsed"
+            initial="collapsed"
+            key="content"
+            style={{ overflow: "hidden" }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            variants={variants}
           >
             <Markdown>{reasoning}</Markdown>
           </motion.div>

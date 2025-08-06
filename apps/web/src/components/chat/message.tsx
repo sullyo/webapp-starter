@@ -4,9 +4,9 @@ import type { ChatRequestOptions, Message } from "ai";
 import { cx } from "class-variance-authority";
 import equal from "fast-deep-equal";
 import { memo, useState } from "react";
-import { MessageContent, Message as PromptMessage } from "@/components/chat/kit/message";
 import { MessageReasoning } from "@/components/chat/message-reasoning";
 import { RenderToolInvocation } from "@/components/chat/tool-message";
+import { MessageContent, Message as PromptMessage } from "@/features/chat/kit/message";
 import { cn } from "@/lib/utils";
 
 const PurePreviewMessage = ({

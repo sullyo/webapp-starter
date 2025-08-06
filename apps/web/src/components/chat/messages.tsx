@@ -2,7 +2,7 @@ import type { UseChatHelpers } from "@ai-sdk/react";
 import type { ChatRequestOptions, Message } from "ai";
 import equal from "fast-deep-equal";
 import { memo, useRef, useState } from "react";
-import { ChatContainer } from "./kit/chat-container";
+import { ChatContainer } from "../../features/chat/kit/chat-container";
 import { PreviewMessage, ThinkingMessage } from "./message";
 
 interface MessagesProps {
@@ -40,9 +40,9 @@ function PureMessages({
         />
       ))}
 
-      {status === "submitted" &&
-        messages.length > 0 &&
-        messages.at(-1)?.role === "user" && <ThinkingMessage />}
+      {status === "submitted" && messages.length > 0 && messages.at(-1)?.role === "user" && (
+        <ThinkingMessage />
+      )}
     </ChatContainer>
   );
 }

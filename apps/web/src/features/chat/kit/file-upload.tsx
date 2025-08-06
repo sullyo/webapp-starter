@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import {
   Children,
   cloneElement,
@@ -11,6 +10,7 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+import { cn } from "@/lib/utils";
 
 type FileUploadContextValue = {
   isDragging: boolean;
@@ -99,14 +99,14 @@ function FileUpload({
   return (
     <FileUploadContext.Provider value={{ isDragging, inputRef, multiple, disabled }}>
       <input
-        type="file"
-        ref={inputRef}
-        onChange={handleFileSelect}
-        className="hidden"
-        multiple={multiple}
         accept={accept}
         aria-hidden
+        className="hidden"
         disabled={disabled}
+        multiple={multiple}
+        onChange={handleFileSelect}
+        ref={inputRef}
+        type="file"
       />
       {children}
     </FileUploadContext.Provider>
@@ -140,7 +140,7 @@ function FileUploadTrigger({
   }
 
   return (
-    <button type="button" className={className} onClick={handleClick} {...props}>
+    <button className={className} onClick={handleClick} type="button" {...props}>
       {children}
     </button>
   );
@@ -157,7 +157,7 @@ function FileUploadContent({ className, ...props }: FileUploadContentProps) {
     return () => setMounted(false);
   }, []);
 
-  if (!(context?.isDragging && mounted ) || context?.disabled) {
+  if (!(context?.isDragging && mounted) || context?.disabled) {
     return null;
   }
 
