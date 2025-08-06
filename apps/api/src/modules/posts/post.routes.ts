@@ -1,9 +1,8 @@
-import { Hono } from "hono";
-
-import { auth, getAuth, getUserId, requireAuth } from "@/pkg/middleware/clerk-auth";
-import { postService } from "@/modules/posts";
-import { zValidator } from "@/pkg/util/validator-wrapper";
+import { zValidator } from "@hono/zod-validator";
 import { postInsertSchema } from "@repo/db";
+import { Hono } from "hono";
+import { postService } from "@/modules/posts";
+import { auth, getAuth, getUserId, requireAuth } from "@/pkg/middleware/clerk-auth";
 
 const postRoutes = new Hono()
   .use(auth())

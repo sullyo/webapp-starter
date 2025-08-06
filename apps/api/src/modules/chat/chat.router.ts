@@ -1,12 +1,10 @@
-import { auth, getUserId, requireAuth } from "@/pkg/middleware/clerk-auth";
-
-import { type Message, smoothStream, streamText, tool } from "ai";
-import { stream } from "hono/streaming";
-import { Hono } from "hono";
-
-import { logger } from "@repo/logs";
+import { type AnthropicProviderOptions, anthropic } from "@ai-sdk/anthropic";
 import { google } from "@ai-sdk/google";
-import { anthropic, AnthropicProviderOptions } from "@ai-sdk/anthropic";
+import { logger } from "@repo/logs";
+import { type Message, smoothStream, streamText } from "ai";
+import { Hono } from "hono";
+import { stream } from "hono/streaming";
+import { auth, getUserId, requireAuth } from "@/pkg/middleware/clerk-auth";
 
 const chatRoutes = new Hono().use("*", auth(), requireAuth).post("/", async (c) => {
   const { messages } = (await c.req.json()) as {
@@ -19,7 +17,7 @@ const chatRoutes = new Hono().use("*", auth(), requireAuth).post("/", async (c) 
 
   const result = streamText({
     system: "You are a helpful assistant that can answer questions and help with tasks.",
-    messages: messages,
+    messages,
     maxSteps: 10,
     model: claude,
     providerOptions: {

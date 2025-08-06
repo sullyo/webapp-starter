@@ -37,7 +37,7 @@ interface JwtPayload {
   };
   role: string;
   aal: string;
-  amr: Array<unknown>;
+  amr: unknown[];
   session_id: string;
   is_anonymous: boolean;
 }

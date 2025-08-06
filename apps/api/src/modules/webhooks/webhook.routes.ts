@@ -1,11 +1,10 @@
 /* From https://clerk.com/docs/webhooks/sync-data */
 
-import { Hono } from "hono";
-
-import { Webhook } from "svix";
-import { WebhookEvent } from "@clerk/backend";
+import type { WebhookEvent } from "@clerk/backend";
 import { db, users } from "@repo/db";
 import { logger } from "@repo/logs";
+import { Hono } from "hono";
+import { Webhook } from "svix";
 
 const webhookRoutes = new Hono().post("/", async (c) => {
   const SIGNING_SECRET = process.env.CLERK_SIGNING_SECRET;
@@ -22,7 +21,7 @@ const webhookRoutes = new Hono().post("/", async (c) => {
   const svix_signature = c.req.header("svix-signature");
 
   // If there are no headers, error out
-  if (!svix_id || !svix_timestamp || !svix_signature) {
+  if (!(svix_id && svix_timestamp && svix_signature)) {
     return c.text("Error: Missing Svix headers", 400);
   }
 

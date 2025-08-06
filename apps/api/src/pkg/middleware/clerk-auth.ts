@@ -1,6 +1,7 @@
 // From: https://github.com/honojs/middleware/blob/main/packages/clerk-auth/src/index.ts
-import { createClerkClient } from "@clerk/backend";
+
 import type { ClerkClient, ClerkOptions } from "@clerk/backend";
+import { createClerkClient } from "@clerk/backend";
 import type { Context, MiddlewareHandler } from "hono";
 import { env } from "hono/adapter";
 
