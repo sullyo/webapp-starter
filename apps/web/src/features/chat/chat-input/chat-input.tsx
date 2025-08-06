@@ -1,16 +1,14 @@
 /** biome-ignore-all lint/performance/useTopLevelRegex: <explanation> */
 "use client";
 
-import { ArrowUpIcon, StopCircle } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import type React from "react";
 import { useCallback } from "react";
-
 import { Button } from "@/components/ui/button";
 import type { ChatHelpers } from "@/features/chat/chat.types";
 import { type DraftData, NEW_CHAT_DRAFT_KEY } from "@/features/chat/hooks/use-chat-drafts";
 import {
   PromptInput,
-  PromptInputAction,
   PromptInputActions,
   PromptInputTextarea,
 } from "@/features/chat/kit/prompt-input";
@@ -155,15 +153,17 @@ export function ChatInput({
   return (
     <div className="relative flex w-full flex-col gap-4">
       <div className="relative order-2 px-2 pb-3 sm:pb-4 md:order-1">
-        <PromptInput className="relative z-10 bg-popover p-0 pt-1 shadow-xs backdrop-blur-xl">
+        <PromptInput
+          className="relative z-10 w-full rounded-3xl border border-input bg-popover p-0 pt-1 shadow-xs"
+          isLoading={status !== "ready"}
+          onSubmit={handleSend}
+          onValueChange={onValueChange}
+          value={value}
+        >
           <FileList files={files} onFileRemove={onFileRemove} />
           <PromptInputTextarea
             className="min-h-[44px] pt-3 pl-4 text-base leading-[1.3] sm:text-base md:text-base"
-            disabled={isSubmitting}
-            onChange={(e) => onValueChange(e.target.value)}
-            onKeyDown={handleKeyDown}
             placeholder="Ask anything..."
-            value={value}
           />
           <PromptInputActions className="mt-5 w-full justify-between px-3 pb-3">
             <div className="flex gap-2">
@@ -176,22 +176,23 @@ export function ChatInput({
               /> */}
               <ButtonSearch isSelected={false} onToggle={() => {}} />
             </div>
-            <PromptInputAction tooltip={status === "streaming" ? "Stop" : "Send"}>
-              <Button
-                aria-label={status === "streaming" ? "Stop" : "Send message"}
-                className="size-9 rounded-full transition-all duration-300 ease-out"
-                disabled={!value || isSubmitting || isOnlyWhitespace(value)}
-                onClick={handleSend}
-                size="sm"
-                type="button"
-              >
-                {status === "streaming" ? (
-                  <StopCircle className="size-4" />
-                ) : (
-                  <ArrowUpIcon className="size-4" />
-                )}
-              </Button>
-            </PromptInputAction>
+            <PromptInputActions className="mt-3 flex w-full items-center justify-between gap-2 p-2">
+              <div />
+              <div className="flex items-center gap-2">
+                <Button
+                  className="size-9 rounded-full"
+                  disabled={!value.trim() || (status !== "ready" && status !== "error")}
+                  onClick={handleSend}
+                  size="icon"
+                >
+                  {status === "ready" || status === "error" ? (
+                    <ArrowUp size={18} />
+                  ) : (
+                    <span className="size-3 rounded-xs bg-white" />
+                  )}
+                </Button>
+              </div>
+            </PromptInputActions>
           </PromptInputActions>
         </PromptInput>
       </div>

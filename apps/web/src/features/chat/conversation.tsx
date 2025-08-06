@@ -1,11 +1,14 @@
 "use client";
 
-import { useRef } from "react";
+import { AlertTriangle } from "lucide-react";
+import { memo, useRef } from "react";
 import type { ChatUIMessage } from "@/features/chat/chat.types";
 import { ChatContainerContent, ChatContainerRoot } from "@/features/chat/kit/chat-container";
-import { Loader } from "@/features/chat/kit/loader";
+import { DotsLoader } from "@/features/chat/kit/loader";
+import { Message } from "@/features/chat/kit/message";
+import { Message as MessageWrapper } from "@/features/chat/message";
+
 import { ScrollButton } from "./kit/scroll-button";
-import { Message } from "./message";
 
 type ConversationProps = {
   messages: ChatUIMessage[];
@@ -13,7 +16,33 @@ type ConversationProps = {
   onDelete: (id: string) => void;
   onEdit: (id: string, newText: string) => void;
   onReload: () => void;
+  error?: Error;
 };
+
+const LoadingMessage = memo(() => (
+  <Message className="mx-auto flex w-full max-w-3xl flex-col items-start gap-2 px-2 md:px-10">
+    <div className="group flex w-full flex-col gap-0">
+      <div className="prose w-full min-w-0 flex-1 rounded-lg bg-transparent p-0 text-foreground">
+        <DotsLoader />
+      </div>
+    </div>
+  </Message>
+));
+
+LoadingMessage.displayName = "LoadingMessage";
+
+const ErrorMessage = memo(({ error }: { error: Error }) => (
+  <Message className="not-prose mx-auto flex w-full max-w-3xl flex-col items-start gap-2 px-0 md:px-10">
+    <div className="group flex w-full flex-col items-start gap-0">
+      <div className="flex min-w-0 flex-1 flex-row items-center gap-2 rounded-lg border-2 border-destructive bg-destructive/20 px-2 py-1 text-primary">
+        <AlertTriangle className="text-destructive" size={16} />
+        <p className="text-destructive">{error.message}</p>
+      </div>
+    </div>
+  </Message>
+));
+
+ErrorMessage.displayName = "ErrorMessage";
 
 export function Conversation({
   messages,
@@ -21,8 +50,10 @@ export function Conversation({
   onDelete,
   onEdit,
   onReload,
+  error,
 }: ConversationProps) {
   const initialMessageCount = useRef(messages.length);
+  const isLoading = status === "streaming" || status === "submitted";
 
   if (!messages || messages.length === 0) return <div className="h-full w-full"></div>;
 
@@ -45,7 +76,7 @@ export function Conversation({
             const hasScrollAnchor = isLast && messages.length > initialMessageCount.current;
 
             return (
-              <Message
+              <MessageWrapper
                 hasScrollAnchor={hasScrollAnchor}
                 id={message.id}
                 isLast={isLast}
@@ -59,11 +90,8 @@ export function Conversation({
               />
             );
           })}
-          {status === "submitted" && messages.length > 0 && messages.at(-1)?.role === "user" && (
-            <div className="group flex min-h-scroll-anchor w-full max-w-3xl flex-col items-start gap-2 px-6 pb-2">
-              <Loader variant="typing" />
-            </div>
-          )}
+          {status === "submitted" && <LoadingMessage />}
+          {status === "error" && error && <ErrorMessage error={error} />}
           <div className="absolute bottom-0 flex w-full max-w-3xl flex-1 items-end justify-end gap-4 px-6 pb-2">
             <ScrollButton className="absolute top-[-50px] right-[30px]" />
           </div>

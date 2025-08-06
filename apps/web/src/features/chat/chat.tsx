@@ -144,6 +144,7 @@ export function Chat({
       <AnimatePresence initial={false} mode="popLayout">
         {id ? (
           <Conversation
+            error={error}
             key="conversation"
             messages={messages}
             onDelete={handleDelete}
