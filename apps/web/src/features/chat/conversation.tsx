@@ -72,7 +72,7 @@ export function Conversation({
           }}
         >
           {messages?.map((message, index) => {
-            const isLast = index === messages.length - 1 && status !== "submitted";
+            const isLast = index === messages.length - 1;
             const hasScrollAnchor = isLast && messages.length > initialMessageCount.current;
 
             return (

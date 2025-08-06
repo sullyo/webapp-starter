@@ -1,11 +1,11 @@
-import { cn } from "@/lib/utils";
+/** biome-ignore-all lint/performance/useTopLevelRegex: Used for parsing markdown */
 import { marked } from "marked";
 import { memo, useId, useMemo } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
+import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
-
-import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "./code-block";
-import { CopyButton } from "@/components/copy-button";
+import { cn } from "@/lib/utils";
+import { CodeBlock, CodeBlockCode } from "./code-block";
 
 export type MarkdownProps = {
   children: string;
@@ -45,19 +45,9 @@ const INITIAL_COMPONENTS: Partial<Components> = {
     const language = extractLanguage(className);
 
     return (
-      <div className="py-4">
-        <CodeBlock className={className}>
-          <CodeBlockGroup className="flex h-9 items-center justify-between px-4">
-            <div className="py-1 pr-2 font-mono text-muted-foreground text-xs">{language}</div>
-          </CodeBlockGroup>
-          <div className="sticky top-14 lg:top-0">
-            <div className="absolute right-0 bottom-0 flex h-9 items-center pr-1.5">
-              <CopyButton value={children as string} />
-            </div>
-          </div>
-          <CodeBlockCode code={children as string} language={language} />
-        </CodeBlock>
-      </div>
+      <CodeBlock className={className}>
+        <CodeBlockCode code={children as string} language={language} />
+      </CodeBlock>
     );
   },
   pre({ children }) {
@@ -74,7 +64,7 @@ const MemoizedMarkdownBlock = memo(
     components?: Partial<Components>;
   }) {
     return (
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+      <ReactMarkdown components={components} remarkPlugins={[remarkGfm, remarkBreaks]}>
         {content}
       </ReactMarkdown>
     );
@@ -100,9 +90,9 @@ function MarkdownComponent({
     <div className={className}>
       {blocks.map((block, index) => (
         <MemoizedMarkdownBlock
-          key={`${blockId}-block-${index}`}
-          content={block}
           components={components}
+          content={block}
+          key={`${blockId}-block-${index}`}
         />
       ))}
     </div>

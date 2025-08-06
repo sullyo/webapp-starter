@@ -35,21 +35,17 @@ export type MessageContentProps = {
   children: React.ReactNode;
   markdown?: boolean;
   className?: string;
-  messageRole?: "user" | "assistant";
 } & React.ComponentProps<typeof Markdown> &
   React.HTMLProps<HTMLDivElement>;
 
 const MessageContent = ({
   children,
   markdown = false,
-  messageRole,
   className,
   ...props
 }: MessageContentProps) => {
   const classNames = cn(
-    messageRole === "user"
-      ? "prose dark:prose-invert whitespace-normal break-words rounded-4xl bg-muted px-3 py-2 text-foreground"
-      : "",
+    "prose whitespace-normal break-words rounded-lg bg-secondary p-2 text-foreground",
     className
   );
 

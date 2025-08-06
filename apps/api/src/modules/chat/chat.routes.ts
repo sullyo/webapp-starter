@@ -46,7 +46,7 @@ export const chatRoutes = new Hono().use("*", auth(), requireAuth).post("/", asy
         tools: {
           weather: weatherTool(),
         },
-        model: googleModel,
+        model: claude,
         messages: modelMessages,
         stopWhen: stepCountIs(10),
         experimental_transform: smoothStream({

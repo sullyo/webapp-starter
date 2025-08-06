@@ -171,21 +171,7 @@ export function MessageUser({
         hasTextContent && (
           <MessageContent
             className="relative max-w-[70%] rounded-4xl bg-accent px-4 py-2"
-            components={{
-              code: ({ children }) => <>{children}</>,
-              pre: ({ children }) => <>{children}</>,
-              h1: ({ children }) => <p>{children}</p>,
-              h2: ({ children }) => <p>{children}</p>,
-              h3: ({ children }) => <p>{children}</p>,
-              h4: ({ children }) => <p>{children}</p>,
-              h5: ({ children }) => <p>{children}</p>,
-              h6: ({ children }) => <p>{children}</p>,
-              p: ({ children }) => <p>{children}</p>,
-              li: ({ children }) => <p>- {children}</p>,
-              ul: ({ children }) => <>{children}</>,
-              ol: ({ children }) => <>{children}</>,
-            }}
-            markdown={true}
+            markdown={false}
             ref={contentRef}
           >
             {textParts.map((part) => part.text).join("")}
