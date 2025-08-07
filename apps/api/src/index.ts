@@ -55,11 +55,7 @@ app.onError((err, c) => {
 app.use(
   "*",
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://zuri-web-gold.vercel.app",
-      "https://zuri-api-505378734009.us-east4.run.app",
-    ],
+    origin: ["http://localhost:3000"],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowHeaders: ["Content-Type", "Authorization"],
     exposeHeaders: ["Content-Length"],
