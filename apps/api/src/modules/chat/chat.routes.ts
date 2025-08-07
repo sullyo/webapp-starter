@@ -65,8 +65,11 @@ export const chatRoutes = new Hono().use("*", auth(), requireAuth).post("/", asy
     onFinish: async (res) => {},
   });
 
-  c.header("X-Vercel-AI-Data-Stream", "v1");
-  c.header("Content-Type", "text/plain; charset=utf-8");
+  c.header("content-type", "text/event-stream");
+  c.header("cache-control", "no-cache");
+  c.header("connection", "keep-alive");
+  c.header("x-vercel-ai-data-stream", "v2");
+  c.header("x-accel-buffering", "no");
 
   return stream(c, (stream) => {
     return stream.pipe(originalStream.pipeThrough(new JsonToSseTransformStream()));

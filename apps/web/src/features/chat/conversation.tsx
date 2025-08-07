@@ -4,7 +4,7 @@ import { AlertTriangle } from "lucide-react";
 import { memo, useRef } from "react";
 import type { ChatUIMessage } from "@/features/chat/chat.types";
 import { ChatContainerContent, ChatContainerRoot } from "@/features/chat/kit/chat-container";
-import { DotsLoader } from "@/features/chat/kit/loader";
+import { Loader } from "@/features/chat/kit/loader";
 import { Message } from "@/features/chat/kit/message";
 import { Message as MessageWrapper } from "@/features/chat/message";
 
@@ -23,7 +23,7 @@ const LoadingMessage = memo(() => (
   <Message className="mx-auto flex w-full max-w-3xl flex-col items-start gap-2 px-2 md:px-10">
     <div className="group flex w-full flex-col gap-0">
       <div className="prose w-full min-w-0 flex-1 rounded-lg bg-transparent p-0 text-foreground">
-        <DotsLoader />
+        <Loader variant="typing" />
       </div>
     </div>
   </Message>
@@ -53,9 +53,10 @@ export function Conversation({
   error,
 }: ConversationProps) {
   const initialMessageCount = useRef(messages.length);
-  const isLoading = status === "streaming" || status === "submitted";
 
   if (!messages || messages.length === 0) return <div className="h-full w-full"></div>;
+  const lastAssistantMessage = messages.findLast((message) => message.role === "assistant");
+  const isLoading = status === "submitted" || lastAssistantMessage?.parts.length === 0;
 
   return (
     <div className="relative flex h-full w-full flex-col items-center overflow-y-auto overflow-x-hidden">
@@ -90,7 +91,7 @@ export function Conversation({
               />
             );
           })}
-          {status === "submitted" && <LoadingMessage />}
+          {isLoading && <LoadingMessage />}
           {status === "error" && error && <ErrorMessage error={error} />}
           <div className="absolute bottom-0 flex w-full max-w-3xl flex-1 items-end justify-end gap-4 px-6 pb-2">
             <ScrollButton className="absolute top-[-50px] right-[30px]" />
