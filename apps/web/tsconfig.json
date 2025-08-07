@@ -6,6 +6,7 @@
         "name": "next"
       }
     ],
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "paths": {
       "@/*": ["./src/*", "../api/src/*"]
     }

@@ -30,10 +30,6 @@ export function Chat({
 
   const [selectedModel, setSelectedModel] = useState("gpt-4o-mini");
 
-  useEffect(() => {
-    setMessages(initialMessages);
-  }, [initialMessages]);
-
   const { error, status, sendMessage, messages, setMessages, regenerate, stop } =
     useChat<ChatUIMessage>({
       id: id ?? undefined,
@@ -44,7 +40,7 @@ export function Chat({
         prepareSendMessagesRequest: ({ messages }) => {
           return {
             body: {
-              messages,
+              message: messages.at(-1),
               chatId: id,
               model: selectedModel,
             },
@@ -65,6 +61,12 @@ export function Chat({
         }
       },
     });
+
+  useEffect(() => {
+    if (initialMessages.length > 0) {
+      setMessages(initialMessages);
+    }
+  }, [initialMessages]);
 
   const { handleInputChange, handleModelChange, handleDelete, handleEdit } = useChatHandlers({
     messages,

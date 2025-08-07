@@ -1,6 +1,6 @@
+import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
-import { drizzle } from "drizzle-orm/postgres-js";
 
 export function createClient(connectionString: string) {
   const client = postgres(connectionString, { prepare: false });
@@ -8,7 +8,7 @@ export function createClient(connectionString: string) {
     schema,
     driver: "pg",
     dbCredentials: {
-      connectionString: connectionString,
+      connectionString,
     },
   };
   return drizzle(client, drizzleConfig);

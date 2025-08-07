@@ -34,7 +34,7 @@ LoadingMessage.displayName = "LoadingMessage";
 const ErrorMessage = memo(({ error }: { error: Error }) => (
   <Message className="not-prose mx-auto flex w-full max-w-3xl flex-col items-start gap-2 px-0 md:px-10">
     <div className="group flex w-full flex-col items-start gap-0">
-      <div className="flex min-w-0 flex-1 flex-row items-center gap-2 rounded-lg border-2 border-destructive bg-destructive/20 px-2 py-1 text-primary">
+      <div className="flex min-w-0 flex-1 flex-row items-center gap-2 rounded-lg border border-destructive bg-destructive/10 px-2 py-1 text-primary">
         <AlertTriangle className="text-destructive" size={16} />
         <p className="text-destructive">{error.message}</p>
       </div>
@@ -91,7 +91,7 @@ export function Conversation({
               />
             );
           })}
-          {isLoading && <LoadingMessage />}
+          {isLoading && status !== "error" && <LoadingMessage />}
           {status === "error" && error && <ErrorMessage error={error} />}
           <div className="absolute bottom-0 flex w-full max-w-3xl flex-1 items-end justify-end gap-4 px-6 pb-2">
             <ScrollButton className="absolute top-[-50px] right-[30px]" />

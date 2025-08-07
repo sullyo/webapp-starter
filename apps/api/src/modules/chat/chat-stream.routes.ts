@@ -13,12 +13,13 @@ import {
 } from "ai";
 import { Hono } from "hono";
 import { stream } from "hono/streaming";
+import { chatService } from "@/modules/chat/chats.service";
 import { weatherTool } from "@/modules/chat/tools/weather.tool";
 import { auth, getUserId, requireAuth } from "@/pkg/middleware/clerk-auth";
 
 export const chatRoutes = new Hono().use("*", auth(), requireAuth).post("/", async (c) => {
-  const { messages, chatId } = (await c.req.json()) as {
-    messages: UIMessage[];
+  const { message, chatId } = (await c.req.json()) as {
+    message: UIMessage;
     chatId: string;
   };
 
@@ -26,7 +27,20 @@ export const chatRoutes = new Hono().use("*", auth(), requireAuth).post("/", asy
   const claude = anthropic("claude-4-sonnet-20250514");
   const googleModel = google("gemini-2.5-flash");
 
-  const modelMessages = convertToModelMessages(messages);
+  const chat = await chatService.getOrCreateChat({
+    userId,
+    id: chatId,
+    firstMessage: message.parts?.[0]?.type === "text" ? message.parts[0].text : undefined,
+  });
+  const messages = (await chatService.getChatMessages({ chatId, userId })) as UIMessage[];
+
+  await chatService.saveMessages({
+    chatId: chat.id,
+    userId,
+    messages: [message],
+  });
+
+  const modelMessages = convertToModelMessages([...messages, message]);
 
   const originalStream = createUIMessageStream({
     execute: ({ writer }) => {
@@ -62,7 +76,13 @@ export const chatRoutes = new Hono().use("*", auth(), requireAuth).post("/", asy
       logger.error("Issue with chat stream", error);
       return "error";
     },
-    onFinish: async (res) => {},
+    onFinish: async (res) => {
+      await chatService.saveMessages({
+        chatId: chat.id,
+        userId,
+        messages: res.messages,
+      });
+    },
   });
 
   c.header("content-type", "text/event-stream");

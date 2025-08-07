@@ -1,10 +1,12 @@
+import "./pkg/load";
 import { logger as appLogger } from "@repo/logs";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
-import { chatRoutes } from "@/modules/chat/chat.routes";
+import { chatRoutes } from "@/modules/chat/chat-stream.routes";
+import { chatsRoutes } from "@/modules/chat/chats.routes";
 import { postRoutes } from "@/modules/posts";
 import { webhookRoutes } from "@/modules/webhooks/webhook.routes";
 
@@ -53,7 +55,11 @@ app.onError((err, c) => {
 app.use(
   "*",
   cors({
-    origin: ["http://localhost:3000"],
+    origin: [
+      "http://localhost:3000",
+      "https://zuri-web-gold.vercel.app",
+      "https://zuri-api-505378734009.us-east4.run.app",
+    ],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowHeaders: ["Content-Type", "Authorization"],
     exposeHeaders: ["Content-Length"],
@@ -61,6 +67,8 @@ app.use(
     credentials: true,
   })
 );
+
+const PORT = process.env.PORT || 3004;
 
 app.use("*", logger());
 app.use("*", prettyJSON());
@@ -73,12 +81,13 @@ const routes = app
   .basePath("/api")
   .route("/webhooks", webhookRoutes)
   .route("/posts", postRoutes)
-  .route("/chat", chatRoutes);
+  .route("/chat", chatRoutes)
+  .route("/chats", chatsRoutes);
 
 export type AppType = typeof routes;
 
 export default {
-  port: 3004,
+  port: PORT,
   fetch: app.fetch,
   idleTimeout: 30,
 };
